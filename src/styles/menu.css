@@ -13,9 +13,7 @@
   box-shadow: 0px 0px 0px 5px #7aa7e9;
 } */
 
-a{
-  color:white;
-}
+
 div {
   box-sizing: border-box;
 }
@@ -49,18 +47,35 @@ button {
   width: 180px;
   height: 100vh;
   position: fixed;
-  padding: 20px;
   z-index: 10;
-}
-.menu-bar div {
-  margin: 20px;
-}
-.menu-bar :hover {
-  cursor: pointer;
+  -webkit-padding-start: 0px;
+  &:hover{
+    cursor: pointer;
+  }
+  
 }
 .menu-bar i {
   margin-right: 5px;
   font-size: 20px;
+}
+
+.sidemenu {
+  padding:18px;
+  color:white;
+  text-align: center;
+  &:hover{
+    color:#0066FF;
+    background-color: white;
+  }
+}
+
+.sidemenu p{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+a{
+  text-decoration: none;
 }
 
 .main{
@@ -70,23 +85,21 @@ button {
 @media screen and (max-width : 768px) {
   .menu-bar {
     width: 100%;
-    height: 6vh;
+    height: 7vh;
+    
+  }
+  .menu-bar ul {
+    color: black;
   }
 
-  .menu-bar div {
+  .sidemenu {
     width: 25%;
     float: left;
-    margin:auto;
-  }
-
-  .menu-bar ul {
-    margin-top: 15px;
-    color: black;
   }
 
   .main{
     margin-left: 0px;
-    margin-top:6vh;
+    margin-top:7vh;
    
 }
 }

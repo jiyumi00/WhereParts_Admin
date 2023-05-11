@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-
 import {Navbar, Container, Nav } from 'react-bootstrap';
 // import '../css/TopPage.css';
 import '../styles/menu.css';
