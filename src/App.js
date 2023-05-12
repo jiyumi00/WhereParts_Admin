@@ -1,6 +1,7 @@
 import {BrowserRouter,Route, Routes} from "react-router-dom";
 
 import './App.css';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from "./pages/login_page";
 import DashBoardPage from './pages/dashboard_page';
