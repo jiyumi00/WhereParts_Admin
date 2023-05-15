@@ -11,9 +11,6 @@ button {
     border: none;
 }
 
-input {
-    width: 100%;
-}
 .login-component {
     width: 100%;
     height: 100vh;
@@ -27,9 +24,27 @@ input {
     width: 400px;
     margin: 15px;
 }
-
+.login-component input{
+    width:100%;
+}
 .LightBlue {
     color: white;
     background-color: #0066FF;
 }
 
+.modalstyle{
+    display: block;
+    position: fixed;
+    width: 100%;
+     height: 100%;
+      background: rgba(0,0,0,0.5);
+}
+
+.closeButton:hover{
+    cursor:pointer;
+}
+
+.radiolist{
+   float:left;
+   margin:15px;
+}

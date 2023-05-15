@@ -15,7 +15,7 @@ export default class Template extends Component {
                 <TopTemplate/>
                 <MenuTemplate/>
                 
-                <div class="main">{this.props.children}</div>
+                <div className="main">{this.props.children}</div>
             </div>
         );
     }

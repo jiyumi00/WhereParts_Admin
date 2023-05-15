@@ -34,9 +34,6 @@ ul {
   position: fixed;
   z-index: 10;
   -webkit-padding-start: 0px;
-  &:hover{
-    cursor: pointer;
-  }
   
 }
 .menu-bar i {
@@ -45,13 +42,14 @@ ul {
 }
 
 .sidemenu {
-  padding:18px;
+  padding:20px;
   color:white;
   text-align: center;
-  &:hover{
-    color:#0066FF;
-    background-color: white;
-  }
+  
+}
+.sidemenu:hover{
+  color:#0066FF;
+  background-color: white;
 }
 .sidemenu p{
   margin-top: auto;
@@ -64,6 +62,7 @@ a{
 
 .main{
     margin-left: 180px;
+    
 }
 
 @media screen and (max-width : 768px) {

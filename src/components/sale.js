@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import { Container, Button, Table, Carousel, Modal } from "react-bootstrap";
 
-export default class Transaction extends Component {
+export default class Sale extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             tab: false,
-            selectList: ["배송전", "배송중", "배송완료", "거래완료"],
-            selectValue: "배송전",
             contents: [
                 {
                     userID: "판매자",
@@ -26,47 +24,25 @@ export default class Transaction extends Component {
                 }]
         }
     }
-    handleChange = (e) => {
-        console.log(`*****handleChange*****`);
-        console.log(`선택한 값 : ${e.target.value}`);
-
-        this.setState({
-            selectValue: e.target.value
-        });
-    };
     render() {
 
         return (
             <div>
-
                 <Container>
-                    {this.state.selectList.map((value, i) => (
-                        <div className="radiolist" key={i}>
-                            <input
-                                id={value}
-                                value={value}
-                                name="platform"
-                                type="radio"
-                                checked={this.state.selectValue === value}
-                                onChange={this.handleChange} /> <label htmlFor={value}>{value}</label>
-                        </div>
-                    ))}
-
                     <Table striped bordered hover>
                         <thead>
                             <tr>
                                 <th>판매자</th>
                                 <th>품명</th>
-                                <th>구매자</th>
-                                <th>결제수단</th>
-                                <th>결제날짜</th>
-                                <th>주문번호</th>
+                                <th>올린날짜</th>
+                                <th>판매금액</th>
+                                <th>수량</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
                                 this.state.contents.map((item, i) =>
-                                    <TransactionItem item={item} key={i} />)
+                                    <SaleItem item={item} key={i} />)
                             }
                         </tbody>
                     </Table>
@@ -80,7 +56,8 @@ export default class Transaction extends Component {
         );
     }
 }
-class TransactionItem extends Component {
+
+class SaleItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -98,7 +75,6 @@ class TransactionItem extends Component {
                     <td>{item.registerDate}</td>
                     <td>{item.price}</td>
                     <td>{item.quantity}</td>
-                    <td>{item.quantity}</td>
                 </tr>
                 {
                     this.state.tab === true ? <DetailItem item={item} onHide={() => { this.setState({ tab: false }) }} /> : null
@@ -107,6 +83,7 @@ class TransactionItem extends Component {
         )
     }
 }
+
 class DetailItem extends Component {
     constructor(props) {
         super(props);
@@ -155,12 +132,10 @@ class DetailItem extends Component {
                         </Carousel>
                         <p>판매글 정보 {item.userID} {item.name}</p>
                         <p>판매자에 대한 필요한 정보(주소)</p>
-                        <p>판매금액</p>
-                        <p>수량</p>
-                        <p>올린날짜</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={() => { this.approve() }}>배송등록알림문자</Button>
+                        <Button variant="primary" onClick={() => { this.approve() }}>승인</Button>
+                        <Button variant="danger" onClick={() => { this.refuse() }}>반려</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
 
