@@ -21,7 +21,9 @@ div {
 ul {
   list-style: none;
 }
-
+a{
+  text-decoration: none;
+}
 
 .LightBlue{
   color:white;
@@ -60,9 +62,7 @@ ul {
   margin-bottom: auto;
 }
 
-a{
-  text-decoration: none;
-}
+
 
 .main{
     margin-left: 180px;

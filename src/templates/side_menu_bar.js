@@ -16,16 +16,14 @@ export default class SideMenuBar extends Component {
             selectValue: "대시보드",
         }
     }
-    stateToggle(){
-        this.state.tab='#0066FF';
-    }
+  
     render() {
         return (
 
             <ul className="menu-bar LightBlue">
                 {
                     this.state.selectList.map((m, i) =>
-                        <Link to={m.href} key={i} onClick={this.stateToggle()}>
+                        <Link to={m.href} key={i}>
                             <li className="sidemenu">
                                 <p >{m.name}</p>
                             </li>

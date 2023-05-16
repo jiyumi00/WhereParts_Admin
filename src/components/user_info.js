@@ -40,13 +40,13 @@ export default class UserInfo extends Component {
 
     render() {
         return (
-            <><div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <><div className="dropdown">
+                <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     승인여부
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a class="dropdown-item" href="#">승인된</a></li>
-                    <li><a class="dropdown-item" href="#">승인안됨</a></li>
+                <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a className="dropdown-item" href="#">승인된</a></li>
+                    <li><a className="dropdown-item" href="#">승인안됨</a></li>
                 </ul>
             </div>
                 <div>
