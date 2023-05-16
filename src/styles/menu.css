@@ -45,12 +45,16 @@ ul {
   padding:20px;
   color:white;
   text-align: center;
-  
+
 }
+
+
 .sidemenu:hover{
+  cursor:pointer;
   color:#0066FF;
   background-color: white;
 }
+
 .sidemenu p{
   margin-top: auto;
   margin-bottom: auto;
@@ -78,6 +82,7 @@ a{
   .sidemenu {
     width: 25%;
     float: left;
+    padding:16px;
   }
 
   .main{

@@ -37,8 +37,6 @@ export default class Transaction extends Component {
     render() {
 
         return (
-            <div>
-
                 <Container>
                     {this.state.selectList.map((value, i) => (
                         <div className="radiolist" key={i}>
@@ -75,8 +73,6 @@ export default class Transaction extends Component {
                     }
                 </Container>
 
-
-            </div>
         );
     }
 }
@@ -112,17 +108,13 @@ class DetailItem extends Component {
         super(props);
     }
     approve = () => {
-        alert('승인되었습니다.')
-        this.props.onHide()
-    }
-    refuse = () => {
-        alert('반려되었습니다.')
+        alert('알림문자를 보냈습니다.')
         this.props.onHide()
     }
     render() {
         const item = this.props.item;
         return (
-            <div className="modal modalstyle show" >
+            <div className="modal show" >
 
                 <Modal.Dialog>
                     <Modal.Header>
@@ -131,16 +123,13 @@ class DetailItem extends Component {
                     </Modal.Header>
 
                     <Modal.Body>
-                        <Carousel >
+                        <Carousel interval={null}>
                             <Carousel.Item>
                                 <img
                                     className="d-block w-100"
                                     src="https://source.unsplash.com/collection/190727/1600x900"
                                     alt="First slide"
                                 />
-                                <Carousel.Caption>
-                                    <h3>사업자등록증</h3>
-                                </Carousel.Caption>
                             </Carousel.Item>
                             <Carousel.Item>
                                 <img
@@ -148,9 +137,6 @@ class DetailItem extends Component {
                                     src="https://source.unsplash.com/WLUHO9A_xik/1600x900"
                                     alt="Second slide"
                                 />
-                                <Carousel.Caption>
-                                    <h3>증명서</h3>
-                                </Carousel.Caption>
                             </Carousel.Item>
                         </Carousel>
                         <p>판매글 정보 {item.userID} {item.name}</p>

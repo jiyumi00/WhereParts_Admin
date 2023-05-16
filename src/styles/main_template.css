@@ -32,7 +32,7 @@ button {
     background-color: #0066FF;
 }
 
-.modalstyle{
+.modal{
     display: block;
     position: fixed;
     width: 100%;

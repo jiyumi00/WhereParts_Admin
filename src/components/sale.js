@@ -46,11 +46,8 @@ export default class Sale extends Component {
                             }
                         </tbody>
                     </Table>
-                    {
-                        this.state.tab === true ? <DetailItem /> : null
-                    }
+                   
                 </Container>
-
 
             </div>
         );
@@ -108,16 +105,13 @@ class DetailItem extends Component {
                     </Modal.Header>
 
                     <Modal.Body>
-                        <Carousel >
+                        <Carousel interval={null}>
                             <Carousel.Item>
                                 <img
                                     className="d-block w-100"
                                     src="https://source.unsplash.com/collection/190727/1600x900"
                                     alt="First slide"
                                 />
-                                <Carousel.Caption>
-                                    <h3>사업자등록증</h3>
-                                </Carousel.Caption>
                             </Carousel.Item>
                             <Carousel.Item>
                                 <img
@@ -125,9 +119,6 @@ class DetailItem extends Component {
                                     src="https://source.unsplash.com/WLUHO9A_xik/1600x900"
                                     alt="Second slide"
                                 />
-                                <Carousel.Caption>
-                                    <h3>증명서</h3>
-                                </Carousel.Caption>
                             </Carousel.Item>
                         </Carousel>
                         <p>판매글 정보 {item.userID} {item.name}</p>
