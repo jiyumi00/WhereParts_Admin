@@ -11,9 +11,8 @@ export default class TopTemplate extends Component {
 
     render() {
         return(
-        <Navbar bg="light" variant="light">
+        <Navbar  bg="light" variant="light">
           <Navbar.Brand href='/' style={{ color: '#0066FF', marginLeft: '15px' }}>LogoImage</Navbar.Brand>
-         
             <Nav className="ms-auto">
               <Link to="/Login" style={{marginRight: '15px'}}>Logout</Link>
               {/* <Nav.Link href='/'>Login</Nav.Link> */}

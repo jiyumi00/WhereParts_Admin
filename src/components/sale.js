@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Button, Table, Carousel, Modal,CloseButton } from "react-bootstrap";
+import { Container, Button, Table, Carousel, Modal,CloseButton,Form } from "react-bootstrap";
 
 export default class Sale extends Component {
     constructor(props) {
@@ -27,9 +27,20 @@ export default class Sale extends Component {
     render() {
 
         return (
-            <div className="background">
+           
                 <Container>
-                    <Table striped bordered hover>
+                <nav>
+                    <Form className="d-flex topmenubar fright">
+                        <Form.Control
+                            type="search"
+                            placeholder="Search"
+                            aria-label="Search"
+                            className="searchinput"
+                        />
+                       <button className="searchbutton darknavy">Search</button>
+                    </Form>
+                </nav>
+                    <Table bordered hover>
                         <thead>
                             <tr>
                                 <th>판매자</th>
@@ -49,7 +60,6 @@ export default class Sale extends Component {
                    
                 </Container>
 
-            </div>
         );
     }
 }

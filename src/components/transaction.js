@@ -40,27 +40,31 @@ export default class Transaction extends Component {
             <Container>
                 <div>
                     {this.state.selectList.map((value, i) => (
-                        <div className="background radiolist" key={i}>
+                        <div className="d-flex background fleft" key={i} style={{marginLeft:0,marginTop:25}}>
                             <input
                                 id={value}
                                 value={value}
-                                name="platform"
+                                name="radio"
                                 type="radio"
                                 checked={this.state.selectValue === value}
-                                onChange={this.handleChange} /> <label htmlFor={value}>{value}</label>
+                                onChange={this.handleChange} />
+                                <label htmlFor={value}> {value}</label>
 
                         </div>
                     ))}
-                    <Form className="d-flex background" >
+                    <Form className="d-flex topmenubar fright" >
                         <Form.Control
                             type="search"
                             placeholder="Search"
                             aria-label="Search"
+                            className="searchinput"
                         />
-                        <Button variant="outline-success">Search</Button>
+                        <button className="searchbutton darknavy">Search</button>
                     </Form>
+                   
                 </div>
-                <Table striped bordered hover>
+
+                <Table bordered hover>
                     <thead>
                         <tr>
                             <th>판매자</th>

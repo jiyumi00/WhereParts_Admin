@@ -1,5 +1,5 @@
 import React, { useState, Component } from 'react';
-
+import {  Form } from "react-bootstrap";
 
 
 export default class LoginPage extends Component {
@@ -24,18 +24,22 @@ export default class LoginPage extends Component {
     render() {
         return (
             //디자인
-            <div className="login-component width">
+            <div className="d-flex login-component width">
                 <form>
-                    <div className="background">
+                    <div className="background" >
                         <label>ID</label>
-                        <input type='text' className="width" value={this.state.inputID} onChange={(e) => { this.onInputIDHandler(e.target.value) }} />
+                        <Form.Control
+                           type='text' className="width" value={this.state.inputID} onChange={(e) => { this.onInputIDHandler(e.target.value) }}
+                        />
                     </div>
-                    <div className="background">
+                    <div className="background" >
                         <label>Password</label>
-                        <input type='password' className="width" value={this.state.inputPW} onChange={(e) => { this.onInputPWHandler(e.target.value) }} />
+                        <Form.Control
+                         type='password' className="width" value={this.state.inputPW} onChange={(e) => { this.onInputPWHandler(e.target.value) }}
+                        />
                     </div>
-                    <div className="background">
-                        <button className="width" formAction=''>Login</button>
+                    <div className="background" >
+                    <button className="loginbutton width darknavy" formAction=''>Login</button>
                     </div>
 
                 </form>

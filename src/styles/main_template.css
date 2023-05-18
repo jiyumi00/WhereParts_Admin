@@ -3,11 +3,35 @@ div {
 }
 
 button {
+    border-radius: 7px;
+    border: none;
+    padding: 8px 12px 8px 12px;
+}
+/* 테이블 스타일 */
+thead{
+    background-color: #0066FF;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+nav{
+    margin-left: 0;
+    margin-right:0;
+}
+input[type=radio] {
+    margin-right: 5px;
+}
+
+.textcenter{
+    text-align: center;
+}
+.fontSize{
+    font-size:15px;
+}
+.loginbutton {
     padding: 15px;
     font-weight: 900;
     text-align: center;
-    border-radius: 10px;
-    border: none;
 }
 
 .width {
@@ -22,16 +46,49 @@ button {
     height: 100vh;
     justify-content: center;
     align-items: center;
-    display: flex;
 }
 
 .login-component div {
     width: 400px;
 }
 
+.css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root {
+    margin-top: -5px;
+
+}
+
+a.fc-col-header-cell-cushion {
+    color: white;
+}
+
+.MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 10px 32px 7.45px 14px;
+}
+
 .LightBlue {
     color: white;
     background-color: #0066FF;
+}
+
+.searchinput {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.searchbutton {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.darknavy {
+    color: white;
+    background-color: rgb(44, 62, 80);
+}
+
+.darknavy:hover,
+.darknavy:active {
+    background-color: rgb(37, 49, 61);
+
 }
 
 .modal {
@@ -44,24 +101,45 @@ button {
     cursor: pointer;
 }
 
-.radiolist {
+.fleft {
     float: left;
 }
 
-.background {
-    margin: 15px;
+.fright {
+    float: right;
 }
-.img{
-    width:30px;
-    height: 30px;
-    object-fit: cover;
+.background{
+    margin:15px;
 }
+.topmenubar {
+    margin:15px 0px 15px 0px;
+}
+
+.radiomargin {
+    margin: 20px 15px 20px 15px;
+}
+
 .location {
     display: grid;
     grid-template-columns: 2fr 1fr;
 }
+
+@media screen and (max-width : 998px) {
+    .fright {
+        float: left;
+        width: 100%;
+        margin: auto;
+        margin-bottom: 15px;
+        margin-top: 15px;
+    }
+}
+
 @media screen and (max-width : 768px) {
-    .radiolist {
+    .fleft {
         margin-top: 0px;
     }
+    .fright {
+        margin-top: 0px;
+    }
+    
 }
