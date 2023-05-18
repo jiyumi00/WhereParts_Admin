@@ -19,25 +19,28 @@ a {
   width: 180px;
   height: 100vh;
   position: fixed;
-  padding: 0px;
 }
-
-.sidemenu {
-  padding: 15px;
-  color: white;
+.sidemenu{
+  padding:15px;
+  color:white;
   text-align: center;
+
+}
+.sidemenu-inactive {
+  color: white;
+
 }
 
-
-.sidemenu:hover {
+.sidemenu-active{
+  color: yellow;
+  font-weight:bold
+ 
+}
+.sidemenu-inactive:hover {
   cursor: pointer;
-  color: #0066FF;
-  background-color: white;
+  color:yellow;
 }
 
-.sidemenu p {
-  margin: auto;
-}
 
 .main {
   margin-left: 180px;

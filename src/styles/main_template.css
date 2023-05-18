@@ -51,7 +51,11 @@ button {
 .background {
     margin: 15px;
 }
-
+.img{
+    width:30px;
+    height: 30px;
+    object-fit: cover;
+}
 .location {
     display: grid;
     grid-template-columns: 2fr 1fr;

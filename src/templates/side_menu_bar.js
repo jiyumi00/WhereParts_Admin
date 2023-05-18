@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, { Component,Nav } from "react";
+import { Link, NavLink, } from "react-router-dom";
 
 
 export default class SideMenuBar extends Component {
@@ -13,21 +13,22 @@ export default class SideMenuBar extends Component {
                 { name: "판매내역", href: "/Sale" },
                 { name: "거래내역", href: "/Transaction" }
             ],
-            selectValue: "대시보드",
+           
         }
     }
-  
+
     render() {
         return (
 
-            <ul className="menu-bar LightBlue">
+            <div className="menu-bar LightBlue">
                 {
                     this.state.selectList.map((m, i) =>
-                        <Link to={m.href} key={i}>
-                            <li className="sidemenu">
-                                <p >{m.name}</p>
-                            </li>
-                        </Link>
+                        <div className='sidemenu'>
+                            <NavLink to={m.href} key={i} className={({isActive})=>isActive?"sidemenu-active":"sidemenu-inactive"}>
+                                {m.name}
+                            </NavLink>
+                        </div>
+
                     )
                 }
 
@@ -39,7 +40,7 @@ export default class SideMenuBar extends Component {
 
 
 
-            </ul>
+            </div>
         )
     }
 }
