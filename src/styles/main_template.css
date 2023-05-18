@@ -4,47 +4,60 @@ div {
 
 button {
     padding: 15px;
-    width: 100%;
     font-weight: 900;
     text-align: center;
     border-radius: 10px;
     border: none;
 }
 
-.login-component {
+.width {
     width: 100%;
+}
+
+.height {
+    height: 100%;
+}
+
+.login-component {
     height: 100vh;
     justify-content: center;
     align-items: center;
     display: flex;
-    flex-direction: column;
 }
 
 .login-component div {
     width: 400px;
-    margin: 15px;
 }
-.login-component input{
-    width:100%;
-}
+
 .LightBlue {
     color: white;
     background-color: #0066FF;
 }
 
-.modal{
+.modal {
     display: block;
     position: fixed;
-    width: 100%;
-     height: 100%;
-      background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
 }
 
-.closeButton:hover{
-    cursor:pointer;
+.closeButton:hover {
+    cursor: pointer;
 }
 
-.radiolist{
-   float:left;
-   margin:15px;
+.radiolist {
+    float: left;
+}
+
+.background {
+    margin: 15px;
+}
+
+.location {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+@media screen and (max-width : 768px) {
+    .radiolist {
+        margin-top: 0px;
+    }
 }

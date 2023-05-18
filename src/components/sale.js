@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Button, Table, Carousel, Modal } from "react-bootstrap";
+import { Container, Button, Table, Carousel, Modal,CloseButton } from "react-bootstrap";
 
 export default class Sale extends Component {
     constructor(props) {
@@ -27,7 +27,7 @@ export default class Sale extends Component {
     render() {
 
         return (
-            <div>
+            <div className="background">
                 <Container>
                     <Table striped bordered hover>
                         <thead>
@@ -96,12 +96,12 @@ class DetailItem extends Component {
     render() {
         const item = this.props.item;
         return (
-            <div className="modal modalstyle show" >
+            <div className="modal">
 
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>상세보기</Modal.Title>
-                        <strong className="closeButton" onClick={this.props.onHide}>X</strong>
+                        <CloseButton onClick={this.props.onHide} />
                     </Modal.Header>
 
                     <Modal.Body>

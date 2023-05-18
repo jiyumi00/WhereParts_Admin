@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Button, Table, Carousel, Modal } from "react-bootstrap";
+import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
 
 export default class Transaction extends Component {
     constructor(props) {
@@ -37,9 +37,10 @@ export default class Transaction extends Component {
     render() {
 
         return (
-                <Container>
+            <Container>
+                <div>
                     {this.state.selectList.map((value, i) => (
-                        <div className="radiolist" key={i}>
+                        <div className="background radiolist" key={i}>
                             <input
                                 id={value}
                                 value={value}
@@ -47,31 +48,40 @@ export default class Transaction extends Component {
                                 type="radio"
                                 checked={this.state.selectValue === value}
                                 onChange={this.handleChange} /> <label htmlFor={value}>{value}</label>
+
                         </div>
                     ))}
-
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>판매자</th>
-                                <th>품명</th>
-                                <th>구매자</th>
-                                <th>결제수단</th>
-                                <th>결제날짜</th>
-                                <th>주문번호</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.state.contents.map((item, i) =>
-                                    <TransactionItem item={item} key={i} />)
-                            }
-                        </tbody>
-                    </Table>
-                    {
-                        this.state.tab === true ? <DetailItem /> : null
-                    }
-                </Container>
+                    <Form className="d-flex background" >
+                        <Form.Control
+                            type="search"
+                            placeholder="Search"
+                            aria-label="Search"
+                        />
+                        <Button variant="outline-success">Search</Button>
+                    </Form>
+                </div>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>판매자</th>
+                            <th>품명</th>
+                            <th>구매자</th>
+                            <th>결제수단</th>
+                            <th>결제날짜</th>
+                            <th>주문번호</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            this.state.contents.map((item, i) =>
+                                <TransactionItem item={item} key={i} />)
+                        }
+                    </tbody>
+                </Table>
+                {
+                    this.state.tab === true ? <DetailItem /> : null
+                }
+            </Container>
 
         );
     }
@@ -114,12 +124,12 @@ class DetailItem extends Component {
     render() {
         const item = this.props.item;
         return (
-            <div className="modal show" >
+            <div className="modal width height" >
 
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>상세보기</Modal.Title>
-                        <strong className="closeButton" onClick={this.props.onHide}>X</strong>
+                        <CloseButton onClick={this.props.onHide} />
                     </Modal.Header>
 
                     <Modal.Body>
@@ -146,7 +156,7 @@ class DetailItem extends Component {
                         <p>올린날짜</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={() => { this.approve() }}>배송등록알림문자</Button>
+                        <Button variant="primary" onClick={() => { this.approve() }}>알림</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
 

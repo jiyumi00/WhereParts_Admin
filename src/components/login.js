@@ -24,18 +24,18 @@ export default class LoginPage extends Component {
     render() {
         return (
             //디자인
-            <div className="login-component">
+            <div className="login-component width">
                 <form>
-                    <div>
+                    <div className="background">
                         <label>ID</label>
-                        <input type='text' value={this.state.inputID} onChange={(e) => { this.onInputIDHandler(e.target.value) }} />
+                        <input type='text' className="width" value={this.state.inputID} onChange={(e) => { this.onInputIDHandler(e.target.value) }} />
                     </div>
-                    <div>
+                    <div className="background">
                         <label>Password</label>
-                        <input type='password' value={this.state.inputPW} onChange={(e) => { this.onInputPWHandler(e.target.value) }} />
+                        <input type='password' className="width" value={this.state.inputPW} onChange={(e) => { this.onInputPWHandler(e.target.value) }} />
                     </div>
-                    <div>
-                        <button formAction=''>Login</button>
+                    <div className="background">
+                        <button className="width" formAction=''>Login</button>
                     </div>
 
                 </form>

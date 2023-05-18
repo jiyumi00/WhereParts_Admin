@@ -19,7 +19,7 @@ export default class DashBoard extends Component {
     render() {
         return(
             <>
-            <div style={{ margin:15, display:'grid',gridTemplateColumns:"2fr 1fr"}}>
+            <div className="background location">
                 <FullCalendar   
                     plugins={[dayGridPlugin,timeGridPlugin,interactionPlugin]}
                     initialView={'dayGridMonth'}
@@ -54,7 +54,7 @@ class DashBoardItem extends Component{
     render(){
         return(
            
-        <Card style={{ width: 'auto',marginLeft:15 }}>
+        <Card style={{ marginLeft:15 }}>
             <Card.Header>
                 <Card.Title>매출액 TOP 10</Card.Title>
             </Card.Header>

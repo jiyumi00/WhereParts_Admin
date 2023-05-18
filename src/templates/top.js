@@ -12,14 +12,12 @@ export default class TopTemplate extends Component {
     render() {
         return(
         <Navbar bg="light" variant="light">
-          <Navbar.Brand href='/' style={{ color: '#0066FF', marginLeft: '18px' }}>LogoImage</Navbar.Brand>
-          <Container>
-            <Nav className="me-auto"></Nav>
+          <Navbar.Brand href='/' style={{ color: '#0066FF', marginLeft: '15px' }}>LogoImage</Navbar.Brand>
+         
             <Nav className="ms-auto">
-              <Link to="/Login">Logout</Link>
+              <Link to="/Login" style={{marginRight: '15px'}}>Logout</Link>
               {/* <Nav.Link href='/'>Login</Nav.Link> */}
             </Nav>
-          </Container>
         </Navbar>
         );
     }
