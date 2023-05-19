@@ -1,7 +1,6 @@
 div {
     box-sizing: border-box;
 }
-
 button {
     border-radius: 7px;
     border: none;
@@ -14,10 +13,7 @@ thead{
     text-align: center;
     font-weight: bold;
 }
-nav{
-    margin-left: 0;
-    margin-right:0;
-}
+
 input[type=radio] {
     margin-right: 5px;
 }
@@ -33,13 +29,8 @@ input[type=radio] {
     font-weight: 900;
     text-align: center;
 }
-
-.width {
-    width: 100%;
-}
-
-.height {
-    height: 100%;
+.height{
+    height:100%;
 }
 
 .login-component {
@@ -100,14 +91,13 @@ a.fc-col-header-cell-cushion {
 .closeButton:hover {
     cursor: pointer;
 }
-
 .fleft {
     float: left;
 }
-
 .fright {
     float: right;
 }
+
 .background{
     margin:15px;
 }
@@ -115,31 +105,26 @@ a.fc-col-header-cell-cushion {
     margin:15px 0px 15px 0px;
 }
 
-.radiomargin {
-    margin: 20px 15px 20px 15px;
-}
-
 .location {
     display: grid;
     grid-template-columns: 2fr 1fr;
 }
-
+.inputnavbar{
+    margin:25px 15px 0px 0px;
+}
 @media screen and (max-width : 998px) {
     .fright {
-        float: left;
         width: 100%;
-        margin: auto;
         margin-bottom: 15px;
         margin-top: 15px;
+    }
+    .inputnavbar{
+        margin:15px 15px 0px 0px;
     }
 }
 
 @media screen and (max-width : 768px) {
-    .fleft {
-        margin-top: 0px;
+    .location {
+       float:left;
     }
-    .fright {
-        margin-top: 0px;
-    }
-    
 }

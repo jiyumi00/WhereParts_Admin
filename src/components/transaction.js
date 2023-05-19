@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
-
+import SearchIcon from '@mui/icons-material/Search';
 export default class Transaction extends Component {
     constructor(props) {
         super(props);
@@ -40,7 +40,7 @@ export default class Transaction extends Component {
             <Container>
                 <div>
                     {this.state.selectList.map((value, i) => (
-                        <div className="d-flex background fleft" key={i} style={{marginLeft:0,marginTop:25}}>
+                        <div className="d-flex fleft inputnavbar" key={i}>
                             <input
                                 id={value}
                                 value={value}
@@ -59,7 +59,7 @@ export default class Transaction extends Component {
                             aria-label="Search"
                             className="searchinput"
                         />
-                        <button className="searchbutton darknavy">Search</button>
+                        <button className="searchbutton darknavy"><SearchIcon /></button>
                     </Form>
                    
                 </div>
@@ -128,7 +128,7 @@ class DetailItem extends Component {
     render() {
         const item = this.props.item;
         return (
-            <div className="modal width height" >
+            <div className="modal w-100 h-100" >
 
                 <Modal.Dialog>
                     <Modal.Header>

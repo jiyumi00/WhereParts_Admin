@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Container, Button, Table, Carousel, Modal,CloseButton,Form } from "react-bootstrap";
+import SearchIcon from '@mui/icons-material/Search';
 
 export default class Sale extends Component {
     constructor(props) {
@@ -37,7 +38,7 @@ export default class Sale extends Component {
                             aria-label="Search"
                             className="searchinput"
                         />
-                       <button className="searchbutton darknavy">Search</button>
+                       <button className="searchbutton darknavy"><SearchIcon /></button>
                     </Form>
                 </nav>
                     <Table bordered hover>
@@ -106,7 +107,7 @@ class DetailItem extends Component {
     render() {
         const item = this.props.item;
         return (
-            <div className="modal">
+            <div className="modal w-100 h-100">
 
                 <Modal.Dialog>
                     <Modal.Header>

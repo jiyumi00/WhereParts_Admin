@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import SearchIcon from '@mui/icons-material/Search';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
@@ -74,7 +75,7 @@ export default class UserInfo extends Component {
                 {/* 드롭박스 영역 */}
                 <Container>
                     
-                    <Box className="d-flex topmenubar fleft" sx={{ minWidth: 200}}>
+                    <Box className="d-flex topmenubar fleft" sx={{ minWidth: 200}} style={{marginBottom:'0px'}}>
                         <FormControl fullWidth>
                             <InputLabel /*id="demo-simple-select-label"*/>승인여부</InputLabel>
                             <Select
@@ -84,13 +85,16 @@ export default class UserInfo extends Component {
                                 label="승인여부"
                                 onChange={this.approvalHandleChange}
                             >
+                                <MenuItem value={2}>전체</MenuItem>
                                 <MenuItem value={0}>승인안됨</MenuItem>
                                 <MenuItem value={1}>승인됨</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
-                    
-                    <Box className="d-flex topmenubar fleft" sx={{ minWidth: 200}} style={{marginLeft:'15px'}}>
+                   
+                   {/* 승인됨을 클릭한 경우만 판매건수 콤보박스 활성화 */}
+                   {this.state.approval==1 && 
+                   <Box className="d-flex topmenubar fleft" sx={{ minWidth: 200}} style={{marginBottom:'0px',marginLeft:'15px'}}>
                         <FormControl fullWidth>
                             <InputLabel /*id="demo-simple-select-label"*/>판매건수</InputLabel>
                             <Select
@@ -100,11 +104,13 @@ export default class UserInfo extends Component {
                                 label="판매건수"
                                 onChange={this.salelHandleChange}
                             >
+                                <MenuItem value={2}>전체</MenuItem>
                                 <MenuItem value={'max'}>높은순</MenuItem>
                                 <MenuItem value={'min'}>낮은순</MenuItem>
                             </Select>
                         </FormControl>
-                    </Box>
+                    </Box>}
+                    
                     <Form className="d-flex topmenubar fright" >
                         <Form.Control
                             type="search"
@@ -112,7 +118,7 @@ export default class UserInfo extends Component {
                             aria-label="Search"
                             className="searchinput"
                         />
-                       <button className="searchbutton darknavy">Search</button>
+                       <button className="searchbutton darknavy"><SearchIcon /></button>
                     </Form>
                 </Container>
 
@@ -133,7 +139,7 @@ export default class UserInfo extends Component {
 
                             </thead>
                             {/* 튜플영역을 map을 사용하여 하나씩 받아와 뿌려주도록 구성함 */}
-                            <tbody className="table-body">
+                            <tbody>
                                 {this.state.contents.map((item, i) => <UserInfoItems item={item} key={i} />)}
                             </tbody>
                         </Table>
@@ -197,7 +203,7 @@ class DetailItem extends Component {
     render() {
         const item = this.props.item;
         return (
-            <div className="modal width height" >
+            <div className="modal w-100 h-100" >
 
                 <Modal.Dialog>
                     <Modal.Header>

@@ -24,22 +24,22 @@ export default class LoginPage extends Component {
     render() {
         return (
             //디자인
-            <div className="d-flex login-component width">
+            <div className="d-flex login-component w-100">
                 <form>
                     <div className="background" >
                         <label>ID</label>
                         <Form.Control
-                           type='text' className="width" value={this.state.inputID} onChange={(e) => { this.onInputIDHandler(e.target.value) }}
+                           type='text' value={this.state.inputID} onChange={(e) => { this.onInputIDHandler(e.target.value) }}
                         />
                     </div>
                     <div className="background" >
                         <label>Password</label>
                         <Form.Control
-                         type='password' className="width" value={this.state.inputPW} onChange={(e) => { this.onInputPWHandler(e.target.value) }}
+                         type='password' value={this.state.inputPW} onChange={(e) => { this.onInputPWHandler(e.target.value) }}
                         />
                     </div>
                     <div className="background" >
-                    <button className="loginbutton width darknavy" formAction=''>Login</button>
+                    <button className="loginbutton w-100 darknavy" formAction=''>Login</button>
                     </div>
 
                 </form>
