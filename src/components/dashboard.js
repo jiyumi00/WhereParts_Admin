@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from '@fullcalendar/react';
 import {Card,ListGroup,Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
 
@@ -10,7 +12,7 @@ export default class DashBoard extends Component {
         super(props);
         this.state = {
             selectDate: null, 
-            modalVisible: false,
+            modalVisible: true,
             saleContents:[
                 { 
                   title: '판매건수 : 23건', 
@@ -30,7 +32,8 @@ export default class DashBoard extends Component {
             <>
                 <div className="background location">
                     <FullCalendar
-                        plugins={[dayGridPlugin]}
+                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                        initialView={'dayGridMonth'}
                         headerToolbar={
                             {
                                 start: 'today',
@@ -58,7 +61,7 @@ class DashBoardTopList extends Component {
         this.state = {
             modalVisible:false,
             priceTopList: [
-                { name: "인제정비", price: 2554000}, 
+                { name: "인제정비", price: 2554000,}, 
                 { name: '부산정비', price: 203400 }, 
                 { name: '마산정비', price: 232000 }, 
                 { name: '김해정비', price: 12000 },

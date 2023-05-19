@@ -7,6 +7,8 @@ import FormControl from '@mui/material/FormControl';
 import SearchIcon from '@mui/icons-material/Search';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
+import WebServiceManager from "../util/webservice_manager";
+
 
 
 export default class UserInfo extends Component {
@@ -48,6 +50,35 @@ export default class UserInfo extends Component {
                 }
             ]
         }
+    }
+
+    componentDidMount() {
+        this.callGetUsersAPI().then((response)=>{
+            console.log('user',response)
+        })
+
+        this.callGetGoodsAPI().then((response)=>{
+            console.log('goods',response)
+        })
+
+        console.log('........................................');
+    }
+
+    async callGetUsersAPI() {
+        let manager = new WebServiceManager("http://203.241.251.177/wparts/GetUsers","post");
+        manager.addFormData("data",{userID:28,passwd:"9999"});
+        let response = await manager.start();
+        if(response.ok)
+            return response.json();
+
+    }
+
+    async callGetGoodsAPI() {
+        let manager = new WebServiceManager("http://203.241.251.177/wparts/GetGoods?login_id=1");
+        let response = await manager.start();
+        if(response.ok)
+            return response.json();
+
     }
 
     //승인여부에 관한 드롭박스 아이템 선택시 value값을 받아오는 핸들러
