@@ -1,4 +1,4 @@
-import {BrowserRouter,Route, Routes} from "react-router-dom";
+import {BrowserRouter,Route, Routes,} from "react-router-dom";
 
 import './App.css';
 
@@ -10,12 +10,11 @@ import SalePage from "./pages/sale_page";
 import TransactionPage from "./pages/transaction_page";
 import MarketingPage from "./pages/marketing_page";
 
-
 function App() {
   return (
    <BrowserRouter>
     <Routes>
-      <Route path="/" element={<LoginPage/>}/>
+      <Route path="/" element={<LoginPage/>} />
       <Route path="/DashBoard" element={<DashBoardPage/>}/>
       <Route path="/UserInfo" element={<UserInfoPage/>}/>
       <Route path="/Sale" element={<SalePage/>}/>

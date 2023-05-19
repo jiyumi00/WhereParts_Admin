@@ -1,16 +1,23 @@
 import React, { useState, Component } from 'react';
 import {  Form } from "react-bootstrap";
-
+import {Navigate} from 'react-router-dom';
 
 export default class LoginPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             inputID: '',
-            inputPW: ''
+            inputPW: '',
+            loginSuccess:false,
         }
     }
-
+    componentDidMount(){
+        console.log('com',this.props.toString)
+    }
+    loginButtonClicked=()=>{
+        console.log('login')
+        this.setState({loginSuccess:true})
+    }
 
     onInputIDHandler = (value) => {
         console.log(value)
@@ -39,9 +46,9 @@ export default class LoginPage extends Component {
                         />
                     </div>
                     <div className="background" >
-                    <button className="loginbutton w-100 darknavy" formAction=''>Login</button>
+                    <button className="loginbutton w-100 darknavy" onClick={this.loginButtonClicked}>Login</button>
                     </div>
-
+                    {this.state.loginSuccess && (<Navigate to='DashBoard'/>)}
                 </form>
             </div>
         )
