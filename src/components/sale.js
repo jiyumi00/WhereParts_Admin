@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Container, Button, Table, Carousel, Modal,CloseButton,Form } from "react-bootstrap";
 import SearchIcon from '@mui/icons-material/Search';
+import DateSelect from "../util/date_select";
 
 export default class Sale extends Component {
     constructor(props) {
@@ -32,6 +33,7 @@ export default class Sale extends Component {
                 <Container>
                 <nav>
                     <Form className="d-flex topmenubar fright">
+                        <DateSelect/>
                         <Form.Control
                             type="search"
                             placeholder="Search"

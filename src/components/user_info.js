@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Button, Table, Carousel, Modal, CloseButton, Form} from "react-bootstrap";
+import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -8,77 +8,39 @@ import SearchIcon from '@mui/icons-material/Search';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 import WebServiceManager from "../util/webservice_manager";
-
-
-
+import Constant from "../util/constant_variables";
+import DateSelect from "../util/date_select";
+//회원관리 페이지 클래스
 export default class UserInfo extends Component {
     constructor(props) {
         super(props);
         this.contents = [];
         this.state = {
             tab: false,
-            //approval:승인여부, sale:판매건수, contents:샘플 데이터
+            /*approval:승인여부, sale:판매건수, contents:회원정보데이터*/
             approval: '',
             sale: '',
-            contents: [
-                {
-                    username: '강수민',
-                    id: '1234',
-                    phone: '010-1234-1234',
-                    signupdate: '2020-03-02',
-                    address: '김해시',
-                    approval: 1,
-                    sale: 0
-                },
-                {
-                    username: '홍길동',
-                    id: '1234',
-                    phone: '010-1234-1234',
-                    signupdate: '2020-03-02',
-                    address: '창원시',
-                    approval: 0,
-                    sale: 0
-                },
-                {
-                    username: '양배추',
-                    id: '1234',
-                    phone: '010-1234-1212',
-                    signupdate: '2020-03-02',
-                    address: '울산시',
-                    approval: 1,
-                    sale: 0
-                }
-            ]
+            contents: []
+
         }
     }
 
     componentDidMount() {
-        this.callGetUsersAPI().then((response)=>{
-            console.log('user',response)
+        this.callGetUsersAPI().then((response) => {
+            console.log('user', response)
 
-            this.setState({contents:response})
+            this.setState({ contents: response })
         })
 
-        this.callGetGoodsAPI().then((response)=>{
-            console.log('goods',response)
-        })
 
-        console.log('........................................');
     }
 
+    //회원 정보 가져오는 API
     async callGetUsersAPI() {
-        let manager = new WebServiceManager("http://203.241.251.177/wparts/GetUsers","post");
-        manager.addFormData("data",{userID:28,passwd:"9999"});
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetUsers", "post");
+        manager.addFormData("data", { userID: 28, passwd: "9999" });
         let response = await manager.start();
-        if(response.ok)
-            return response.json();
-
-    }
-
-    async callGetGoodsAPI() {
-        let manager = new WebServiceManager("http://203.241.251.177/wparts/GetGoods?login_id=1");
-        let response = await manager.start();
-        if(response.ok)
+        if (response.ok)
             return response.json();
 
     }
@@ -99,60 +61,65 @@ export default class UserInfo extends Component {
         this.setState({ sale: e.target.value })
     }
 
-
     render() {
         console.log('approval', this.state.approval)
         console.log('sale', this.state.sale)
         return (
             <div>
-                {/* 드롭박스 영역 */}
+                {/* 서브탑메뉴바 영역 */}
                 <Container>
-                    
-                    <Box className="d-flex topmenubar fleft" sx={{ minWidth: 200}} style={{marginBottom:'0px'}}>
+
+                    <Box className="d-flex topmenubar fleft" sx={{ minWidth: 200 }} style={{ marginBottom: '0px' }}>
                         <FormControl fullWidth>
-                            <InputLabel /*id="demo-simple-select-label"*/>승인여부</InputLabel>
+                            <InputLabel>승인여부</InputLabel>
                             <Select
-                                //labelId="demo-simple-select-label"
-                                //id="demo-simple-select"
                                 value={this.state.approval}
                                 label="승인여부"
                                 onChange={this.approvalHandleChange}
                             >
                                 <MenuItem value={2}>전체</MenuItem>
-                                <MenuItem value={0}>승인안됨</MenuItem>
-                                <MenuItem value={1}>승인됨</MenuItem>
+                                <MenuItem value={0}>승인됨</MenuItem>
+                                <MenuItem value={1}>승인안됨</MenuItem>
                             </Select>
                         </FormControl>
                     </Box>
-                   
-                   {/* 승인됨을 클릭한 경우만 판매건수 콤보박스 활성화 */}
-                   {this.state.approval==1 && 
-                   <Box className="d-flex topmenubar fleft" sx={{ minWidth: 200}} style={{marginBottom:'0px',marginLeft:'15px'}}>
-                        <FormControl fullWidth>
-                            <InputLabel /*id="demo-simple-select-label"*/>판매건수</InputLabel>
-                            <Select
-                                //labelId="demo-simple-select-label"
-                                //id="demo-simple-select"
-                                value={this.state.sale}
-                                label="판매건수"
-                                onChange={this.salelHandleChange}
-                            >
-                                <MenuItem value={2}>전체</MenuItem>
-                                <MenuItem value={'max'}>높은순</MenuItem>
-                                <MenuItem value={'min'}>낮은순</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Box>}
-                    
-                    <Form className="d-flex topmenubar fright" >
+
+                    {/* 승인됨을 클릭한 경우만 판매건수 콤보박스 활성화 */}
+                    {this.state.approval == 1 &&
+                        <Box className="d-flex topmenubar fleft" sx={{ minWidth: 200 }} style={{ marginBottom: '0px', marginLeft: '15px' }}>
+                            <FormControl fullWidth>
+                                <InputLabel>판매건수</InputLabel>
+                                <Select
+                                    value={this.state.sale}
+                                    label="판매건수"
+                                    onChange={this.salelHandleChange}
+                                >
+                                    <MenuItem value={2}>전체</MenuItem>
+                                    <MenuItem value={'max'}>높은순</MenuItem>
+                                    <MenuItem value={'min'}>낮은순</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    }
+
+                    <Form className="d-flex topmenubar fright">
+                        <DateSelect/>
                         <Form.Control
                             type="search"
                             placeholder="Search"
                             aria-label="Search"
                             className="searchinput"
                         />
-                       <button className="searchbutton darknavy"><SearchIcon /></button>
+                        <button className="searchbutton darknavy"><SearchIcon /></button>
                     </Form>
+
+                    <Form className="d-flex topmenubar fright" onClick={() => { this.setState({ tab: true }) }}>
+                        <Button variant="outline-primary">회원등록</Button>
+                    </Form>
+                    {
+                        this.state.tab === true ? <UserRegistrationModal onHide={() => { this.setState({ tab: false }) }} /> : null
+                    }
+
                 </Container>
 
                 {/* 테이블 영역 */}
@@ -161,7 +128,7 @@ export default class UserInfo extends Component {
                         <Table bordered hover>
                             <thead>
                                 <tr>
-                                    <th>이름</th>
+                                    <th>상호</th>
                                     <th>사업자번호</th>
                                     <th>전화번호</th>
                                     <th>가입일시</th>
@@ -176,7 +143,7 @@ export default class UserInfo extends Component {
                                 {this.state.contents.map((item, i) => <UserInfoItems item={item} key={i} />)}
                             </tbody>
                         </Table>
-                        
+
 
                     </Container>
                 </div>
@@ -188,7 +155,8 @@ export default class UserInfo extends Component {
     }
 }
 
-// 데이터를 뿌려주는 클래스
+//--------------------------------------------------------------------------------------------------------
+// 테이블에 데이터를 뿌려주는 클래스
 class UserInfoItems extends Component {
     constructor(props) {
         super(props);
@@ -202,20 +170,20 @@ class UserInfoItems extends Component {
         return (
             <>
                 <tr onClick={() => { this.setState({ tab: true }) }}>
-                    <td>{item.username}</td>
                     <td>{item.id}</td>
+                    <td>{item.companyNo}</td>
                     <td>{item.phone}</td>
-                    <td>{item.signupdate}</td>
-                    <td>{item.address}</td>
-                    {/* 0:승인안됨, 1:승인됨 */}
-                    {item.approval === 0
-                        ? (<td>X</td>)
-                        : (<td>O</td>)
+                    <td>{item.registerDate}</td>
+                    <td>{item.validate}</td>
+                    {/* 0:승인됨, 1:승인안됨 */}
+                    {item.validate === 0
+                        ? (<td>O</td>)
+                        : (<td>X</td>)
                     }
                     <td>{item.sale}</td>
                 </tr>
                 {
-                    this.state.tab === true ? <DetailItem item={item} onHide={() => { this.setState({ tab: false }) }} /> : null
+                    this.state.tab === true ? <UserDetailItemModal item={item} onHide={() => { this.setState({ tab: false }) }} /> : null
                 }
 
             </>
@@ -225,14 +193,61 @@ class UserInfoItems extends Component {
     }
 }
 
-class DetailItem extends Component {
+//--------------------------------------------------------------------------------------------------------
+//UserInfo 상세보기 모달 클래스
+class UserDetailItemModal extends Component {
     constructor(props) {
         super(props);
+        this.id = this.props.item.id
+        this.state = {
+            //companyNoImageURI:사업자등록증 사진, cardImageURI:명함 사진
+            companyNoImageURI: '',
+            cardImageURI: ''
+        }
     }
     approve = () => {
         alert('알림문자를 보냈습니다.')
         this.props.onHide()
     }
+
+    componentDidMount() {
+        this.callGetCompanyImage().then((response) => {
+            let reader = new FileReader();
+            reader.readAsDataURL(response);
+            reader.onloadend = () => {
+                this.setState({ companyNoImageURI: reader.result });
+            }
+        })
+
+        this.callGetcardImage().then((response) => {
+            let reader = new FileReader();
+            reader.readAsDataURL(response);
+            reader.onloadend = () => {
+                this.setState({ cardImageURI: reader.result });
+            }
+        })
+    }
+
+    //사업자등록증 사진을 가져오는 API
+    async callGetCompanyImage() {
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetCompanyImage", "post");
+        manager.addFormData("data", { userID: 28, passwd: "9999", id: this.id });//열람하고자 하는 id
+        let response = await manager.start();
+        if (response.ok) {
+            return response.blob();
+        }
+    }
+
+    //명함 사진을 가져오는 API
+    async callGetcardImage() {
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetNamecardImage", "post");
+        manager.addFormData("data", { userID: 28, passwd: "9999", id: this.id });//열람하고자 하는 id
+        let response = await manager.start();
+        if (response.ok) {
+            return response.blob();
+        }
+    }
+
     render() {
         const item = this.props.item;
         return (
@@ -249,26 +264,26 @@ class DetailItem extends Component {
                             <Carousel.Item>
                                 <img
                                     className="d-block w-100"
-                                    src="https://source.unsplash.com/collection/190727/1600x900"
+                                    src={this.state.companyNoImageURI}
                                     alt="First slide"
                                 />
                             </Carousel.Item>
                             <Carousel.Item>
                                 <img
                                     className="d-block w-100"
-                                    src="https://source.unsplash.com/WLUHO9A_xik/1600x900"
+                                    src={this.state.cardImageURI}
                                     alt="Second slide"
                                 />
                             </Carousel.Item>
                         </Carousel>
                         <p>이름 : {item.username}</p>
-                        <p>사업자 번호 : {item.id}</p>
+                        <p>사업자 번호 : {item.companyNo}</p>
                         <p>전화번호 : {item.phone}</p>
-                        <p>가입일시 : {item.signupdate}</p>
+                        <p>가입일시 : {item.registerDate}</p>
                         <p>주소 : {item.address}</p>
                     </Modal.Body>
                     <Modal.Footer>
-                    <Button variant="primary" onClick={() => { this.approve() }}>수정</Button>
+                        <Button variant="primary" onClick={() => { this.approve() }}>수정</Button>
                         <Button variant="danger" onClick={() => { this.approve() }}>탈퇴</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
@@ -277,4 +292,183 @@ class DetailItem extends Component {
             </div>
         )
     }
+}
+
+//--------------------------------------------------------------------------------------------------------
+//회원정보 등록 모달
+class UserRegistrationModal extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            //companyNo:사업자등록 번호, companyName:회사상호명, companyAddress:사업자 주소, passwd:비밀번호,
+            companyNo: '',
+            companyName: '',
+            companyAddress: '',
+            passwd: '',
+            companyImageURI: '',
+            nameCardImageURI: '',
+        }
+
+    }
+
+
+
+    companyImageUploadHandle = (e) => {
+        console.log(e.target.files)
+        this.setState({ companyImageURI: e.target.files })
+    }
+    nameCardImageURIUploadHandle =(e)=>{
+        console.log(e.target.files)
+        this.setState({nameCardImageURI:e.target.files})
+    }
+
+    //회원등록 입력 변화 핸들러
+    companyNoOnChangeText = (value) => {
+        console.log('companyNo', this.state.companyNo)
+        this.setState({ companyNo: value })
+    }
+    companyNameOnChangeText = (value) => {
+        console.log('companyName', this.state.companyName)
+        this.setState({ companyName: value })
+    }
+    companyAddressOnChangeText = (value) => {
+        console.log('companyAddress', this.state.companyAddress)
+        this.setState({ companyAddress: value })
+    }
+    passwdOnChangeText = (value) => {
+        console.log('passwd', this.state.passwd)
+        this.setState({ passwd: value })
+    }
+
+
+
+
+    //회원정보 서버에 등록 API
+    async callAddUserAPI() {
+        const userData = {
+            companyNo: this.state.companyNo.replace(/-/g, ''),
+            companyName: this.state.companyName,
+            companyAddress: this.state.companyAddress,
+            passwd: this.state.passwd
+        };
+        //const imageData = this.makeBinaryData();
+
+        let manager = new WebServiceManager(Constant.serviceURL + "/AddUser", "post");
+        manager.addFormData("data", userData);
+        manager.addBinaryData("file1", this.state.companyImageURI); //사업자 등록증 이미지
+        manager.addBinaryData("file2", this.state.nameCardImageURI); //명함 이미지
+
+        
+        console.log(userData);
+        //console.log(imageData[0]);
+        //console.log(imageData[1]);
+        let response = await manager.start();
+        if (response.ok) {
+            return response.json();
+        }
+    }
+
+    goAddUser = () => {
+        this.callAddUserAPI().then((response) => {
+            console.log('adduser', response);
+            if (response.success == 0) {
+                alert("이미 있는 사업자번호입니다");
+            }
+            else if (response.success == -1) {
+                alert("서버 오류로 회원가입에 실패했습니다.");
+            }
+            else {
+                alert('가입 신청 완료', '입력 된 내용 확인 후 승인이 완료됩니다.');
+                //this.setState({ modal: this.state.modal ? false : true }); //신청대기 모달
+            }
+        })
+
+    }
+    makeBinaryData() {
+        let imageData = [];
+        //사업자등록증 이미지
+        const companyImageData = {
+            uri: this.state.companyImageURI,
+            type: "image/jpeg",
+            name: 'photo.jpg',
+        }
+        imageData.push(companyImageData);
+        //명함 이미지
+        const cardImageData = {
+            uri: this.state.nameCardImageURI,
+            type: "image/jpeg",
+            name: 'photo.jpg',
+        }
+        imageData.push(cardImageData);
+        return imageData;
+    }
+
+
+    render() {
+        return (
+            <div className="modal w-100 h-100" >
+
+                <Modal.Dialog>
+                    <Modal.Header>
+                        <Modal.Title>회원등록</Modal.Title>
+                        <CloseButton onClick={this.props.onHide} />
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        <Carousel interval={null}>
+
+                            <Carousel.Item>
+                                <img
+                                    className="d-block w-100"
+                                    src={''}
+                                    alt="test Image"
+                                />
+                            </Carousel.Item>
+
+                        </Carousel>
+                        <form>
+                            {/* 이미지 파일 업로드 */}
+                            <div>
+                                <input type="file" name="file" onChange={this.companyImageUploadHandle} />
+                                <input type="file" name="file" onChange={this.nameCardImageURIUploadHandle} />
+                            </div>
+                            {/* 회원정보 입력 */}
+                            <div className="background" >
+                                <label>사업자등록 번호</label>
+                                <Form.Control
+                                    type='text' value={this.state.companyNo} onChange={(e) => { this.companyNoOnChangeText(e.target.value) }}
+                                />
+                            </div>
+                            <div className="background" >
+                                <label>상호명</label>
+                                <Form.Control
+                                    type='text' value={this.state.companyName} onChange={(e) => { this.companyNameOnChangeText(e.target.value) }}
+                                />
+                            </div>
+                            <div className="background" >
+                                <label>사업자 주소</label>
+                                <Form.Control
+                                    type='text' value={this.state.companyAddress} onChange={(e) => { this.companyAddressOnChangeText(e.target.value) }}
+                                />
+                            </div>
+                            <div className="background" >
+                                <label>비밀번호</label>
+                                <Form.Control
+                                    type='text' value={this.state.passwd} onChange={(e) => { this.passwdOnChangeText(e.target.value) }}
+                                />
+                            </div>
+                        </form>
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.goAddUser}>회원등록</Button>
+                    </Modal.Footer>
+                </Modal.Dialog>
+
+
+            </div >
+
+        )
+    }
+
 }
