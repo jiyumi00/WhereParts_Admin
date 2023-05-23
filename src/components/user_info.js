@@ -28,7 +28,6 @@ export default class UserInfo extends Component {
     componentDidMount() {
         this.callGetUsersAPI().then((response) => {
             console.log('user', response)
-
             this.setState({ contents: response })
         })
 

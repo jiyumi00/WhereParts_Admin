@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Container, Button, Table, Carousel, Modal,CloseButton,Form } from "react-bootstrap";
+import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
 import SearchIcon from '@mui/icons-material/Search';
 import DateSelect from "../util/date_select";
+import WebServiceManager from "../util/webservice_manager";
 
 export default class Sale extends Component {
     constructor(props) {
@@ -9,59 +10,72 @@ export default class Sale extends Component {
 
         this.state = {
             tab: false,
-            contents: [
-                {
-                    userID: "판매자",
-                    name: "품명",
-                    registerDate: "2020-05-30",
-                    price: 10000,
-                    quantity: 1
-                },
-                {
-                    userID: "판매",
-                    name: "품명",
-                    registerDate: "2023-04-10",
-                    price: 20000,
-                    quantity: 2
-                }]
+            contents: [],
+           
         }
+    }
+    componentDidMount() {
+
+        this.callGetGoodsAPI().then((response) => {
+            console.log('goods', response)
+            this.setState({ contents: response });
+        })
+      
+        console.log('........................................');
+    }
+
+    goGetGoods = () => {
+        this.callGetGoodsAPI().then((response) => {
+            this.setState({ buyContents: response, emptyListViewVisible: response.length == 0 ? true : false })
+        });
+    }
+
+    async callGetGoodsAPI() {
+        let manager = new WebServiceManager("http://203.241.251.177/wparts/GetGoods?login_id=1");
+        let response = await manager.start();
+        if (response.ok)
+            return response.json();
+
+    }
+    onDateListener=(dates)=>{
+        console.log('datesListener',dates)
     }
     render() {
 
         return (
-           
-                <Container>
+
+            <Container>
                 <nav>
                     <Form className="d-flex topmenubar fright">
-                        <DateSelect/>
+                        <DateSelect onDateListener={this.onDateListener}/>
                         <Form.Control
                             type="search"
                             placeholder="Search"
                             aria-label="Search"
                             className="searchinput"
                         />
-                       <button className="searchbutton darknavy"><SearchIcon /></button>
+                        <button className="searchbutton darknavy"><SearchIcon /></button>
                     </Form>
                 </nav>
-                    <Table bordered hover>
-                        <thead>
-                            <tr>
-                                <th>판매자</th>
-                                <th>품명</th>
-                                <th>올린날짜</th>
-                                <th>판매금액</th>
-                                <th>수량</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.state.contents.map((item, i) =>
-                                    <SaleItem item={item} key={i} />)
-                            }
-                        </tbody>
-                    </Table>
-                   
-                </Container>
+                <Table bordered hover>
+                    <thead>
+                        <tr>
+                            <th>판매자</th>
+                            <th>품명</th>
+                            <th>올린날짜</th>
+                            <th>판매금액</th>
+                            <th>수량</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            this.state.contents.map((item, i) =>
+                                <SaleItem item={item} key={i} />)
+                        }
+                    </tbody>
+                </Table>
+
+            </Container>
 
         );
     }
@@ -71,10 +85,12 @@ class SaleItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tab: false
+            tab: false,
+            
         }
 
     }
+  
     render() {
         const item = this.props.item;
         return (
@@ -87,7 +103,7 @@ class SaleItem extends Component {
                     <td>{item.quantity}</td>
                 </tr>
                 {
-                    this.state.tab === true ? <DetailItem item={item} onHide={() => { this.setState({ tab: false }) }} /> : null
+                    this.state.tab === true ? <DetailItem goodsID={item.id} onHide={() => { this.setState({ tab: false }) }} /> : null
                 }
             </>
         )
@@ -97,6 +113,24 @@ class SaleItem extends Component {
 class DetailItem extends Component {
     constructor(props) {
         super(props);
+        this.state={
+            modalcontents: [],
+        }
+    }
+    componentDidMount() {
+
+        this.callGetGoodsDetailAPI().then((response) => {
+            console.log('detailgoods', response)
+            this.setState({ modalcontents: response });
+        })
+        console.log('........................................');
+    }
+      async callGetGoodsDetailAPI() {
+        let manager = new WebServiceManager("http://203.241.251.177/wparts/GetGoodsDetail?login_id=3&id="+this.props.goodsID);
+        let response = await manager.start();
+        if (response.ok)
+            return response.json();
+
     }
     approve = () => {
         alert('승인되었습니다.')
@@ -107,10 +141,8 @@ class DetailItem extends Component {
         this.props.onHide()
     }
     render() {
-        const item = this.props.item;
         return (
             <div className="modal w-100 h-100">
-
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>상세보기</Modal.Title>
@@ -134,13 +166,21 @@ class DetailItem extends Component {
                                 />
                             </Carousel.Item>
                         </Carousel>
-                        <p>판매글 정보 {item.userID} {item.name}</p>
-                        <p>판매자에 대한 필요한 정보(주소)</p>
+                        <h5>판매글 정보</h5>
+                        <p>id: {this.state.modalcontents.id}</p>
+                        <p>userID: {this.state.modalcontents.userID}</p>
+                        <p>name: {this.state.modalcontents.name}</p>
+                        <p>number: {this.state.modalcontents.number}</p>
+                        <p>price: {this.state.modalcontents.price}</p>
+                        <p>hashTag: {this.state.modalcontents.hashTag}</p>
+                        <p>quantity: {this.state.modalcontents.quantity}</p>
+                        <p>genuine: {this.state.modalcontents.genuine}</p>
+                        <p>spec: {this.state.modalcontents.spec}</p>
+                        <p>valid: {this.state.modalcontents.valid}</p>
+                        <p>removeFlag: {this.state.modalcontents.removeFlag}</p>
+                        <p>registerDate: {this.state.modalcontents.registerDate}</p>
+
                     </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={() => { this.approve() }}>승인</Button>
-                        <Button variant="danger" onClick={() => { this.refuse() }}>반려</Button>
-                    </Modal.Footer>
                 </Modal.Dialog>
 
 
