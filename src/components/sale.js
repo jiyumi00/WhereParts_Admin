@@ -17,27 +17,16 @@ export default class Sale extends Component {
         }
     }
     componentDidMount() {
-
         this.callGetGoodsAPI().then((response) => {
             console.log('goods', response)
             this.setState({ contents: response });
         })
-
-        console.log('........................................');
     }
 
     goGetGoods = () => {
         this.callGetGoodsAPI().then((response) => {
             this.setState({ buyContents: response, emptyListViewVisible: response.length == 0 ? true : false })
         });
-    }
-
-    async callGetGoodsAPI() {
-        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoods?login_id=1");
-        let response = await manager.start();
-        if (response.ok)
-            return response.json();
-
     }
     //기간설정리스너
     onDateListener=(date)=>{
@@ -48,22 +37,39 @@ export default class Sale extends Component {
         console.log('dateRange',dates)
         this.setState({dateRange:dates,date:0});
     }
+    async callGetGoodsAPI() {
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoods?login_id=1");
+        let response = await manager.start();
+        if (response.ok)
+            return response.json();
+
+    }
+   
     render() {
 
         return (
 
             <Container>
-                <nav>
-                    <Form className="d-flex topmenubar fright">
-                    <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener}/>
-                        <Form.Control
-                            type="search"
-                            placeholder="Search"
-                            aria-label="Search"
-                            className="searchinput"
-                        />
-                        <button className="searchbutton darknavy"><SearchIcon /></button>
-                    </Form>
+               <nav className="topmenubar">
+                    <div className="d-flex flex-row">
+                        <Form>
+                            <div className="fleft">
+                                <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
+                            </div>
+
+                            <div className="d-flex fright" style={{ marginLeft: '15px' }}>
+                                <Form.Control
+                                    type="search"
+                                    placeholder="Search"
+                                    aria-label="Search"
+                                    className="searchinput"
+                                />
+                                <button className="searchbutton darknavy"><SearchIcon /></button>
+                            </div>
+
+                        </Form>
+                    </div>
+
                 </nav>
                 <Table bordered hover>
                     <thead>
@@ -130,7 +136,7 @@ class SaleItem extends Component {
                     <td>{item.registerDate}</td>
                     <td>{item.price}</td>
                     <td>{item.quantity}</td>
-                    <td><img height="100px" src={this.state.goodsFirstImageURI} /></td>
+                    <td><img height="100px" width="100px" src={this.state.goodsFirstImageURI} /></td>
                 </tr>
                 {
                     this.state.tab === true ? <DetailItem goodsID={item.id} onHide={() => { this.setState({ tab: false }) }} /> : null
@@ -156,6 +162,7 @@ class DetailItem extends Component {
             for(let i=1; i<=response.length;i++){
                 this.callGetImageAPI(i).then((response) => {
                     console.log('response',response)
+                    
                     let reader=new FileReader();
                     reader.readAsDataURL(response);
                     reader.onloadend=()=>{

@@ -109,9 +109,7 @@ a.fc-col-header-cell-cushion {
     display: grid;
     grid-template-columns: 2fr 1fr;
 }
-.inputnavbar{
-    margin:25px 15px 0px 0px;
-}
+
 .datepicker-one{
     text-align: center;
     width: 320px;
@@ -121,12 +119,13 @@ a.fc-col-header-cell-cushion {
     border-bottom-right-radius: 4px;
 }
 @media screen and (max-width : 998px) {
+    .fleft{
+        width:100%;
+    }
     .fright {
         width:100%;
-        margin-bottom: 15px;
         margin-top: 15px;
     }
-    
     .datepicker-one{
         width: 100%;
     }

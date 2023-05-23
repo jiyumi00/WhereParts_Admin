@@ -9,8 +9,6 @@ export default class Transaction extends Component {
         super(props);
 
         this.state = {
-            date:0,
-            dateRange:[],
             tab: false,
             selectList: ["배송전", "배송중", "배송완료", "거래완료"],
             selectValue: "배송전",
@@ -39,7 +37,6 @@ export default class Transaction extends Component {
             selectValue: e.target.value
         });
     };
-    //기간설정
     onDateListener=(date)=>{
         console.log('date',date)
         this.setState({dateRange:[],date:date});
@@ -52,32 +49,45 @@ export default class Transaction extends Component {
 
         return (
             <Container>
-                <div>
-                    {this.state.selectList.map((value, i) => (
-                        <div className="d-flex fleft inputnavbar" key={i}>
-                            <input
-                                id={value}
-                                value={value}
-                                name="radio"
-                                type="radio"
-                                checked={this.state.selectValue === value}
-                                onChange={this.handleChange} />
+                <nav className="topmenubar">
+                    <div className="d-flex topmenubar">
+                        {this.state.selectList.map((value, i) => (
+                            <div style={{marginRight:'15px'}} key={i}>
+                                <input
+                                    id={value}
+                                    value={value}
+                                    name="radio"
+                                    type="radio"
+                                    checked={this.state.selectValue === value}
+                                    onChange={this.handleChange} />
                                 <label htmlFor={value}> {value}</label>
 
-                        </div>
-                    ))}
-                    <Form className="d-flex topmenubar fright" >
-                    <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener}/>
-                        <Form.Control
-                            type="search"
-                            placeholder="Search"
-                            aria-label="Search"
-                            className="searchinput"
-                        />
-                        <button className="searchbutton darknavy"><SearchIcon /></button>
-                    </Form>
-                   
-                </div>
+                            </div>
+                        ))}
+
+                    </div>
+
+                    <div className="d-flex flex-row">
+                        <Form>
+                            <div className="d-flex fleft">
+                                <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
+                            </div>
+
+                            <div className="d-flex fright" style={{ marginLeft: '15px' }}>
+                                <Form.Control
+                                    type="search"
+                                    placeholder="Search"
+                                    aria-label="Search"
+                                    className="searchinput"
+                                />
+                                <button className="searchbutton darknavy"><SearchIcon /></button>
+                            </div>
+
+                        </Form>
+                    </div>
+
+                </nav>
+
 
                 <Table bordered hover>
                     <thead>

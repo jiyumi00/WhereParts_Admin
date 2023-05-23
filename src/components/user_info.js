@@ -21,8 +21,8 @@ export default class UserInfo extends Component {
             approval: '',
             sale: '',
             contents: [],
-            //기간설정
-            date: 0,
+
+            date: 0,  //기간설정
             dateRange: [],
         }
     }
@@ -30,7 +30,6 @@ export default class UserInfo extends Component {
     componentDidMount() {
         this.callGetUsersAPI().then((response) => {
             console.log('user', response)
-
             this.setState({ contents: response })
         })
 
@@ -62,6 +61,7 @@ export default class UserInfo extends Component {
         console.log(e)
         this.setState({ sale: e.target.value })
     }
+
     //기간설정리스너
     onDateListener = (date) => {
         console.log('date', date)
@@ -78,62 +78,66 @@ export default class UserInfo extends Component {
             <div>
                 {/* 서브탑메뉴바 영역 */}
                 <Container>
-                    <nav>
-                        <div className="d-flex">
-
-                        <Box className="topmenubar fleft" sx={{ minWidth: 200 }} style={{ marginBottom: '0px' }}>
-                            <FormControl fullWidth>
-                                <InputLabel>승인여부</InputLabel>
-                                <Select
-                                    value={this.state.approval}
-                                    label="승인여부"
-                                    onChange={this.approvalHandleChange}
-                                >
-                                    <MenuItem value={2}>전체</MenuItem>
-                                    <MenuItem value={0}>승인됨</MenuItem>
-                                    <MenuItem value={1}>승인안됨</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-
-                        {/* 승인됨을 클릭한 경우만 판매건수 콤보박스 활성화 */}
-                        {this.state.approval == 1 &&
-                            <Box className="topmenubar fleft" sx={{ minWidth: 200 }} style={{ marginBottom: '0px', marginLeft: '15px' }}>
+                    <nav className="topmenubar">
+                        <div className="d-flex topmenubar ">
+                            <Box sx={{ minWidth: 200 }} >
                                 <FormControl fullWidth>
-                                    <InputLabel>판매건수</InputLabel>
+                                    <InputLabel>승인여부</InputLabel>
                                     <Select
-                                        value={this.state.sale}
-                                        label="판매건수"
-                                        onChange={this.salelHandleChange}
+                                        value={this.state.approval}
+                                        label="승인여부"
+                                        onChange={this.approvalHandleChange}
                                     >
                                         <MenuItem value={2}>전체</MenuItem>
-                                        <MenuItem value={'max'}>높은순</MenuItem>
-                                        <MenuItem value={'min'}>낮은순</MenuItem>
+                                        <MenuItem value={0}>승인됨</MenuItem>
+                                        <MenuItem value={1}>승인안됨</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Box>
-                        }
-</div>
-                        <Form className="d-flex topmenubar fright">
-                            <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
-                            <Form.Control
-                                type="search"
-                                placeholder="Search"
-                                aria-label="Search"
-                                className="searchinput"
-                            />
-                            <button className="searchbutton darknavy"><SearchIcon /></button>
-                        </Form>
 
-                        <Form className="topmenubar fright" onClick={() => { this.setState({ tab: true }) }}>
-                            <Button variant="outline-primary">회원등록</Button>
-                        </Form>
-                        {
-                            this.state.tab === true ? <UserRegistrationModal onHide={() => { this.setState({ tab: false }) }} /> : null
-                        }
+                            {/* 승인됨을 클릭한 경우만 판매건수 콤보박스 활성화 */}
+                            {this.state.approval === 0 &&
+                                <Box style={{ marginLeft: '15px' }} sx={{ minWidth: 200 }}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>판매건수</InputLabel>
+                                        <Select
+                                            value={this.state.sale}
+                                            label="판매건수"
+                                            onChange={this.salelHandleChange}
+                                        >
+                                            <MenuItem value={2}>전체</MenuItem>
+                                            <MenuItem value={'max'}>높은순</MenuItem>
+                                            <MenuItem value={'min'}>낮은순</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            }
+                        </div>
+
+                        <div className="d-flex flex-row">
+                            <Form >
+                                <div className="d-flex fleft">
+                                    <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
+                                    <Button style={{ marginLeft: '15px' }} variant="outline-primary" onClick={() => { this.setState({ tab: true }) }}>회원등록</Button>
+                                </div>
+
+                                <div className="d-flex fright" style={{ marginLeft: '15px' }}>
+                                    <Form.Control
+                                        type="search"
+                                        placeholder="Search"
+                                        aria-label="Search"
+                                        className="searchinput"
+                                    />
+                                    <button className="searchbutton darknavy"><SearchIcon /></button>
+                                </div>
+
+                            </Form>
+                            {
+                                this.state.tab === true ? <UserRegistrationModal onHide={() => { this.setState({ tab: false }) }} /> : null
+                            }
+                        </div>
+
                     </nav>
-
-
 
                     {/* 테이블 영역 */}
                     <Table bordered hover>
@@ -147,7 +151,6 @@ export default class UserInfo extends Component {
                                 <th>가입승인</th>
                                 <th>판매건수</th>
                             </tr>
-
                         </thead>
                         {/* 튜플영역을 map을 사용하여 하나씩 받아와 뿌려주도록 구성함 */}
                         <tbody>
@@ -164,6 +167,7 @@ export default class UserInfo extends Component {
         );
     }
 }
+
 
 //--------------------------------------------------------------------------------------------------------
 // 테이블에 데이터를 뿌려주는 클래스
@@ -232,11 +236,12 @@ class UserDetailItemModal extends Component {
         })
 
         this.callGetcardImageAPI().then((response) => {
-            let reader = new FileReader();
+            this.setState({ cardImageURI: URL.createObjectURL(response) })
+            /* let reader = new FileReader();
             reader.readAsDataURL(response);
             reader.onloadend = () => {
                 this.setState({ cardImageURI: reader.result });
-            }
+            } */
         })
     }
 
@@ -318,28 +323,12 @@ class UserRegistrationModal extends Component {
             companyAddress: '',
             passwd: '',
             companyImageURI: '',
+            //companytest:'',
             nameCardImageURI: '',
         }
 
     }
 
-
-
-    companyImageUploadHandle(input) {
-        if (input.files && input.files[0]) {
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('preview').src = e.target.result;
-            };
-            reader.readAsDataURL(input.files[0])
-        }
-        console.log(input.target.files)
-        //this.setState({ companyImageURI: input.target.files })
-    }
-    nameCardImageURIUploadHandle = (e) => {
-        console.log(e.target.files)
-        this.setState({ nameCardImageURI: e.target.files })
-    }
 
     //회원등록 입력 변화 핸들러
     companyNoOnChangeText = (value) => {
@@ -360,6 +349,16 @@ class UserRegistrationModal extends Component {
     }
 
 
+    // companyImageUploadHandle(input) {
+
+
+    //     this.setState({ companyImageURI: input.files[0] })
+    //     this.setState({companytest:URL.createObjectURL(input.files[0])})
+    // }
+    // nameCardImageURIUploadHandle = (e) => {
+    //     console.log(e.target.files)
+    //     this.setState({ nameCardImageURI: e.target.files })
+    // }
 
 
     //회원정보 서버에 등록 API
@@ -424,6 +423,7 @@ class UserRegistrationModal extends Component {
 
 
     render() {
+
         return (
             <div className="modal w-100 h-100" >
 
@@ -435,22 +435,25 @@ class UserRegistrationModal extends Component {
                     {/* 이미지 프리뷰 할지 고민중 */}
                     <Modal.Body>
                         <Carousel interval={null}>
-
                             <Carousel.Item>
                                 <img
-                                    id="preview"
                                     className="d-block w-100"
-                                    src={''}
-                                    alt="test Image"
+                                    src={this.state.companyNoImageURI?URL.createObjectURL(this.state.companyNoImageURI):"https://source.unsplash.com/collection/190727/1600x900"}
                                 />
                             </Carousel.Item>
+                            {/* <Carousel.Item>
+                                <img
+                                    className="d-block w-100"
+                                    src={URL.createObjectURL(this.state.nameCardImageURI)}
+                                />
+                            </Carousel.Item> */}
 
                         </Carousel>
                         <form>
                             {/* 이미지 파일 업로드 */}
                             <div>
-                                <input type="file" name="file" onChange={(e) => { this.companyImageUploadHandle(e.target) }} />
-                                <input type="file" name="file" onChange={this.nameCardImageURIUploadHandle} />
+                                <input type="file" name="file" onChange={(e) => { this.setState({companyNoImageURI:e.target.files[0]})}} />
+                                {/* <input type="file" onChange={(e) => { this.setState({ nameCardImageURI: e.target.files[0] }) }} /> */}
                             </div>
                             {/* 회원정보 입력 */}
                             <div className="background" >
