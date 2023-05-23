@@ -9,6 +9,8 @@ export default class Transaction extends Component {
         super(props);
 
         this.state = {
+            date:0,
+            dateRange:[],
             tab: false,
             selectList: ["배송전", "배송중", "배송완료", "거래완료"],
             selectValue: "배송전",
@@ -37,6 +39,15 @@ export default class Transaction extends Component {
             selectValue: e.target.value
         });
     };
+    //기간설정
+    onDateListener=(date)=>{
+        console.log('date',date)
+        this.setState({dateRange:[],date:date});
+    }
+    onDateRangeListener=(dates)=>{
+        console.log('dateRange',dates)
+        this.setState({dateRange:dates,date:0});
+    }
     render() {
 
         return (
@@ -56,7 +67,7 @@ export default class Transaction extends Component {
                         </div>
                     ))}
                     <Form className="d-flex topmenubar fright" >
-                        <DateSelect/>
+                    <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener}/>
                         <Form.Control
                             type="search"
                             placeholder="Search"

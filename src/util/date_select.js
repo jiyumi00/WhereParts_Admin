@@ -9,36 +9,35 @@ export default class DateSelect extends Component {
         this.state={
             startDate:null,
             endDate:null,
-            today:false,
-            week:false,
-            month:false,
+            date:0,
         }
 
     }
+    dateButtonClicked=(value)=>{
+        this.setState({date:value,startDate:0,endDate:0});
+        this.props.onDateListener(value);
+    }
     setChangeDate=(dates)=>{
-
-        console.log('dates',dates)
         const [start,end]=dates;
         this.setState({startDate:start,endDate:end})
-        this.props.onDateListener(dates);
+        this.props.onDateRangeListener(dates);
     }
     render() {
-        console.log('button',this.state.today)
+       
         return(
             <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class={this.state.today?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.setState({today:true,week:false,month:false})}}>Today</button>
-                <button type="button" class={this.state.week?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.setState({today:false,week:true,month:false})}}>Week</button>
-                <button type="button" class={this.state.month?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.setState({today:false,week:false,month:true})}}>Month</button>
+                <button type="button" class={this.state.date==1?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(1)}}>일</button>
+                <button type="button" class={this.state.date==2?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(2)}}>주</button>
+                <button type="button" class={this.state.date==3?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(3)}}>월</button>
                 <DatePicker 
                     selectsRange={true}
                     className="datepicker-one"
                     locale={ko}
                     dateFormat="yyyy년 MM월 dd일"
-                    selected={this.state.startDate}
                     startDate={this.state.startDate}
                     endDate={this.state.endDate}
                     maxDate={new Date()}
-                    onInputClick={()=>{this.setState({today:false,week:false,month:false})}}
+                    onInputClick={()=>{this.setState({date:0})}}
                     onChange={(dates)=>this.setChangeDate(dates)}/>       
             </div>
         );

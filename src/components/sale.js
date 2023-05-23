@@ -3,6 +3,7 @@ import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "re
 import SearchIcon from '@mui/icons-material/Search';
 import DateSelect from "../util/date_select";
 import WebServiceManager from "../util/webservice_manager";
+import Constant from "../util/constant_variables";
 
 export default class Sale extends Component {
     constructor(props) {
@@ -11,7 +12,8 @@ export default class Sale extends Component {
         this.state = {
             tab: false,
             contents: [],
-           
+            date:0,
+            dateRange:[],
         }
     }
     componentDidMount() {
@@ -20,7 +22,7 @@ export default class Sale extends Component {
             console.log('goods', response)
             this.setState({ contents: response });
         })
-      
+
         console.log('........................................');
     }
 
@@ -31,14 +33,20 @@ export default class Sale extends Component {
     }
 
     async callGetGoodsAPI() {
-        let manager = new WebServiceManager("http://203.241.251.177/wparts/GetGoods?login_id=1");
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoods?login_id=1");
         let response = await manager.start();
         if (response.ok)
             return response.json();
 
     }
-    onDateListener=(dates)=>{
-        console.log('datesListener',dates)
+    //기간설정리스너
+    onDateListener=(date)=>{
+        console.log('date',date)
+        this.setState({dateRange:[],date:date});
+    }
+    onDateRangeListener=(dates)=>{
+        console.log('dateRange',dates)
+        this.setState({dateRange:dates,date:0});
     }
     render() {
 
@@ -47,7 +55,7 @@ export default class Sale extends Component {
             <Container>
                 <nav>
                     <Form className="d-flex topmenubar fright">
-                        <DateSelect onDateListener={this.onDateListener}/>
+                    <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener}/>
                         <Form.Control
                             type="search"
                             placeholder="Search"
@@ -65,6 +73,7 @@ export default class Sale extends Component {
                             <th>올린날짜</th>
                             <th>판매금액</th>
                             <th>수량</th>
+                            <th>상품이미지</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,13 +93,33 @@ export default class Sale extends Component {
 class SaleItem extends Component {
     constructor(props) {
         super(props);
+        this.goodsID = this.props.item.id
         this.state = {
             tab: false,
-            
+            goodsFirstImageURI: '',
+
         }
 
     }
-  
+
+    componentDidMount() {
+        this.callGetGoodsFirstImageAPI().then((response) => {
+            let reader = new FileReader();
+            reader.readAsDataURL(response);
+            reader.onloadend = () => {
+                this.setState({ goodsFirstImageURI: reader.result });
+            }
+        })
+    }
+
+    async callGetGoodsFirstImageAPI() {
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsImage?id=" + this.goodsID + "&position=1");
+        let response = await manager.start();
+        if (response.ok) {
+            return response.blob();
+        }
+    }
+
     render() {
         const item = this.props.item;
         return (
@@ -101,6 +130,7 @@ class SaleItem extends Component {
                     <td>{item.registerDate}</td>
                     <td>{item.price}</td>
                     <td>{item.quantity}</td>
+                    <td><img height="100px" src={this.state.goodsFirstImageURI} /></td>
                 </tr>
                 {
                     this.state.tab === true ? <DetailItem goodsID={item.id} onHide={() => { this.setState({ tab: false }) }} /> : null
@@ -113,25 +143,56 @@ class SaleItem extends Component {
 class DetailItem extends Component {
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             modalcontents: [],
+            goodsImages: []
         }
     }
     componentDidMount() {
-
         this.callGetGoodsDetailAPI().then((response) => {
-            console.log('detailgoods', response)
-            this.setState({ modalcontents: response });
+            this.setState({ modalcontents: response });        
         })
-        console.log('........................................');
+        this.callImageLengthAPI().then((response) => {
+            for(let i=1; i<=response.length;i++){
+                this.callGetImageAPI(i).then((response) => {
+                    console.log('response',response)
+                    let reader=new FileReader();
+                    reader.readAsDataURL(response);
+                    reader.onloadend=()=>{
+                        const images=this.state.goodsImages;
+                        images.push(reader.result.replace("application/octet-stream", "image/jpeg"));
+                        this.setState({goodsImages:images})
+                        console.log('images',images)
+                    }
+                });
+
+            }
+            
+        })
+        
     }
-      async callGetGoodsDetailAPI() {
-        let manager = new WebServiceManager("http://203.241.251.177/wparts/GetGoodsDetail?login_id=3&id="+this.props.goodsID);
+    async callGetGoodsDetailAPI() {
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsDetail?login_id=3&id=" + this.props.goodsID);
         let response = await manager.start();
         if (response.ok)
             return response.json();
-
     }
+    async callImageLengthAPI() {
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsImageLength?id=" + this.props.goodsID)
+        let response = await manager.start();
+        if (response.ok) {
+            return response.json();
+        }
+    }
+    async callGetImageAPI(position) {
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsImage?id=" + this.props.goodsID + "&position="+position);
+        let response = await manager.start();
+        if (response.ok) {
+            return response.blob();
+        }
+    }
+
+
     approve = () => {
         alert('승인되었습니다.')
         this.props.onHide()
@@ -141,6 +202,7 @@ class DetailItem extends Component {
         this.props.onHide()
     }
     render() {
+     
         return (
             <div className="modal w-100 h-100">
                 <Modal.Dialog>
@@ -151,20 +213,7 @@ class DetailItem extends Component {
 
                     <Modal.Body>
                         <Carousel interval={null}>
-                            <Carousel.Item>
-                                <img
-                                    className="d-block w-100"
-                                    src="https://source.unsplash.com/collection/190727/1600x900"
-                                    alt="First slide"
-                                />
-                            </Carousel.Item>
-                            <Carousel.Item>
-                                <img
-                                    className="d-block w-100"
-                                    src="https://source.unsplash.com/WLUHO9A_xik/1600x900"
-                                    alt="Second slide"
-                                />
-                            </Carousel.Item>
+                            {this.state.goodsImages.map((item, i) => <Carousel.Item><img className="d-block w-100" src={item}/></Carousel.Item>)}
                         </Carousel>
                         <h5>판매글 정보</h5>
                         <p>id: {this.state.modalcontents.id}</p>
