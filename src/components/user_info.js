@@ -4,12 +4,11 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import SearchIcon from '@mui/icons-material/Search';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+
+import Select from '@mui/material/Select';
 
 import WebServiceManager from "../util/webservice_manager";
 import Constant from "../util/constant_variables";
-import DateSelect from "../util/date_select";
 import PageHeader from "../util/page_header";
 
 import CompanyNoImage from "../images/companyNo.png";
@@ -500,7 +499,7 @@ class UserRegisterModal extends Component {
 
                     </Modal.Body>
                     <Modal.Footer>
-                        {this.state.registerButtonVisible==true ?<Button variant="primary" onClick={this.goAddUser} >회원등록</Button>:<Button variant="secondary" >회원등록</Button>}
+                        {this.state.registerButtonVisible==true ?<Button variant="primary" onClick={this.goAddUser} >회원등록</Button>:<Button variant="secondary" disabled>회원등록</Button>}
                         
                     </Modal.Footer>
                 </Modal.Dialog>

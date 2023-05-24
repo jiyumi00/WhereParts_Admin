@@ -3,7 +3,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from '@fullcalendar/react';
-import {Card,ListGroup,Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
+import {Card,Button, Table, Carousel, Modal, CloseButton } from "react-bootstrap";
 
 
 
@@ -150,7 +150,7 @@ class DetailItem extends Component {
         return (
             <div className="modal width height" >
 
-                <Modal.Dialog>
+                <Modal.Dialog centered>
                     <Modal.Header>
                         <Modal.Title>상세보기</Modal.Title>
                         <CloseButton onClick={this.props.hideModal} />
