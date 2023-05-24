@@ -10,22 +10,18 @@ export default class Sale extends Component {
         super(props);
 
         this.state = {
-            tab: false,
-            contents: [],
-            date:0,
-            dateRange:[],
+            goodsContents: [],
+            date:0,  // 0: 설정x, 1:today, 2:week, 3:month
+            dateRange:[], //기간 범위
         }
     }
     componentDidMount() {
-        this.callGetGoodsAPI().then((response) => {
-            console.log('goods', response)
-            this.setState({ contents: response });
-        })
+        this.goGetGoods();
     }
 
-    goGetGoods = () => {
+    goGetGoods() {
         this.callGetGoodsAPI().then((response) => {
-            this.setState({ buyContents: response, emptyListViewVisible: response.length == 0 ? true : false })
+            this.setState({ goodsContents: response})
         });
     }
     //기간설정리스너
@@ -42,18 +38,16 @@ export default class Sale extends Component {
         let response = await manager.start();
         if (response.ok)
             return response.json();
-
     }
    
     render() {
-
         return (
-
             <Container>
                <nav className="topmenubar">
                     <div className="d-flex flex-row">
                         <Form>
                             <div className="fleft">
+                                {/*기간설정*/}
                                 <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
                             </div>
 
@@ -84,7 +78,7 @@ export default class Sale extends Component {
                     </thead>
                     <tbody>
                         {
-                            this.state.contents.map((item, i) =>
+                            this.state.goodsContents.map((item, i) =>
                                 <SaleItem item={item} key={i} />)
                         }
                     </tbody>
@@ -101,20 +95,15 @@ class SaleItem extends Component {
         super(props);
         this.goodsID = this.props.item.id
         this.state = {
-            tab: false,
+            modalVisible: false, //상품 모달
             goodsFirstImageURI: '',
-
         }
 
     }
 
     componentDidMount() {
         this.callGetGoodsFirstImageAPI().then((response) => {
-            let reader = new FileReader();
-            reader.readAsDataURL(response);
-            reader.onloadend = () => {
-                this.setState({ goodsFirstImageURI: reader.result });
-            }
+            this.setState({goodsFirstImageURI:URL.createObjectURL(response)})
         })
     }
 
@@ -130,7 +119,7 @@ class SaleItem extends Component {
         const item = this.props.item;
         return (
             <>
-                <tr onClick={() => { this.setState({ tab: true }) }}>
+                <tr onClick={() => { this.setState({ modalVisible: true }) }}>
                     <td>{item.userID}</td>
                     <td>{item.name}</td>
                     <td>{item.registerDate}</td>
@@ -139,38 +128,31 @@ class SaleItem extends Component {
                     <td><img height="100px" width="100px" src={this.state.goodsFirstImageURI} /></td>
                 </tr>
                 {
-                    this.state.tab === true ? <DetailItem goodsID={item.id} onHide={() => { this.setState({ tab: false }) }} /> : null
+                    this.state.modalVisible === true && <GoodsDetailItem goodsID={this.goodsID} hideButtonClicked={() => { this.setState({ modalVisible: false }) }} /> 
                 }
             </>
         )
     }
 }
 
-class DetailItem extends Component {
+class GoodsDetailItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            modalcontents: [],
+            goodsDetailContents: [],
             goodsImages: []
         }
     }
     componentDidMount() {
         this.callGetGoodsDetailAPI().then((response) => {
-            this.setState({ modalcontents: response });        
+            this.setState({ goodsDetailContents: response });        
         })
         this.callImageLengthAPI().then((response) => {
             for(let i=1; i<=response.length;i++){
                 this.callGetImageAPI(i).then((response) => {
-                    console.log('response',response)
-                    
-                    let reader=new FileReader();
-                    reader.readAsDataURL(response);
-                    reader.onloadend=()=>{
-                        const images=this.state.goodsImages;
-                        images.push(reader.result.replace("application/octet-stream", "image/jpeg"));
-                        this.setState({goodsImages:images})
-                        console.log('images',images)
-                    }
+                    const images=this.state.goodsImages;
+                    images.push(URL.createObjectURL(response))
+                    this.setState({goodsImages:images})
                 });
 
             }
@@ -198,16 +180,6 @@ class DetailItem extends Component {
             return response.blob();
         }
     }
-
-
-    approve = () => {
-        alert('승인되었습니다.')
-        this.props.onHide()
-    }
-    refuse = () => {
-        alert('반려되었습니다.')
-        this.props.onHide()
-    }
     render() {
      
         return (
@@ -215,7 +187,7 @@ class DetailItem extends Component {
                 <Modal.Dialog>
                     <Modal.Header>
                         <Modal.Title>상세보기</Modal.Title>
-                        <CloseButton onClick={this.props.onHide} />
+                        <CloseButton onClick={this.props.hideButtonClicked} />
                     </Modal.Header>
 
                     <Modal.Body>
@@ -223,18 +195,18 @@ class DetailItem extends Component {
                             {this.state.goodsImages.map((item, i) => <Carousel.Item><img className="d-block w-100" src={item}/></Carousel.Item>)}
                         </Carousel>
                         <h5>판매글 정보</h5>
-                        <p>id: {this.state.modalcontents.id}</p>
-                        <p>userID: {this.state.modalcontents.userID}</p>
-                        <p>name: {this.state.modalcontents.name}</p>
-                        <p>number: {this.state.modalcontents.number}</p>
-                        <p>price: {this.state.modalcontents.price}</p>
-                        <p>hashTag: {this.state.modalcontents.hashTag}</p>
-                        <p>quantity: {this.state.modalcontents.quantity}</p>
-                        <p>genuine: {this.state.modalcontents.genuine}</p>
-                        <p>spec: {this.state.modalcontents.spec}</p>
-                        <p>valid: {this.state.modalcontents.valid}</p>
-                        <p>removeFlag: {this.state.modalcontents.removeFlag}</p>
-                        <p>registerDate: {this.state.modalcontents.registerDate}</p>
+                        <p>id: {this.state.goodsDetailContents.id}</p>
+                        <p>userID: {this.state.goodsDetailContents.userID}</p>
+                        <p>name: {this.state.goodsDetailContents.name}</p>
+                        <p>number: {this.state.goodsDetailContents.number}</p>
+                        <p>price: {this.state.goodsDetailContents.price}</p>
+                        <p>hashTag: {this.state.goodsDetailContents.hashTag}</p>
+                        <p>quantity: {this.state.goodsDetailContents.quantity}</p>
+                        <p>genuine: {this.state.goodsDetailContents.genuine}</p>
+                        <p>spec: {this.state.goodsDetailContents.spec}</p>
+                        <p>valid: {this.state.goodsDetailContents.valid}</p>
+                        <p>removeFlag: {this.state.goodsDetailContents.removeFlag}</p>
+                        <p>registerDate: {this.state.goodsDetailContents.registerDate}</p>
 
                     </Modal.Body>
                 </Modal.Dialog>
