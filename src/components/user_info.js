@@ -230,6 +230,7 @@ class UserDetailModal extends Component {
         })
     }
 
+   
     //사업자등록증 사진을 가져오는 API
     async callGetCompanyImageAPI() {
         let manager = new WebServiceManager(Constant.serviceURL + "/GetCompanyImage", "post");
@@ -311,6 +312,20 @@ class UserRegisterModal extends Component {
 
     }
 
+    addCompanyNoImage=(value)=>{
+        this.setState({ companyNoImageURI: value },()=>{
+            this.goCompanyInfo(this.state.companyNoImageURI)
+        })
+    }
+    goCompanyInfo(imageURI){
+        this.callCompanyInfoAPI(imageURI).then((response)=>{
+            if(response.success==0){
+                alert('사업자 인식 실패')
+            }
+            else
+                this.setState({companyNo:response.no, companyName:response.name,companyAddress:response.address })
+        })
+    }
     //회원정보 서버에 등록 API
     async callAddUserAPI() {
         const userData = {
@@ -333,7 +348,15 @@ class UserRegisterModal extends Component {
             return response.json();
         }
     }
-
+    //사업자 등록증 이미지로 텍스트 분석하여 상호, 사업자번호, 소재지 가져오기
+    async callCompanyInfoAPI(imageData){
+        let manager=new WebServiceManager(Constant.serviceURL+"/GetCompanyInfo","post");
+        manager.addBinaryData("file",imageData);
+        let response=await manager.start();
+        if(response.ok){
+            return response.json();
+        }
+    }
     goAddUser = () => {
         this.callAddUserAPI().then((response) => {
             console.log('adduser', response);
@@ -345,7 +368,8 @@ class UserRegisterModal extends Component {
             }
             else {
                 alert('가입 신청 완료', '입력 된 내용 확인 후 승인이 완료됩니다.');
-                //this.setState({ modal: this.state.modal ? false : true }); //신청대기 모달
+                this.props.hideButtonClicked()
+              
             }
         })
 
@@ -382,7 +406,7 @@ class UserRegisterModal extends Component {
                         <form>
                             {/* 이미지 파일 업로드 */}
                             <div>
-                                <input type="file" onChange={(e) => { this.setState({ companyNoImageURI: e.target.files[0] }) }} />
+                                <input type="file" onChange={(e) => {this.addCompanyNoImage(e.target.files[0]) }} />
                                 <input type="file" onChange={(e) => { this.setState({ nameCardImageURI: e.target.files[0] }) }} />
                             </div>
                             {/* 회원정보 입력 */}
@@ -406,6 +430,12 @@ class UserRegisterModal extends Component {
                             </div>
                             <div className="background" >
                                 <label>비밀번호</label>
+                                <Form.Control
+                                    type='text' value={this.state.passwd} onChange={(e) => { this.setState({passwd:e.target.value}) }}
+                                />
+                            </div>
+                            <div className="background" >
+                                <label>비밀번호 확인</label>
                                 <Form.Control
                                     type='text' value={this.state.passwd} onChange={(e) => { this.setState({passwd:e.target.value}) }}
                                 />
