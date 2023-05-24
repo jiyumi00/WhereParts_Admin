@@ -10,6 +10,13 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import WebServiceManager from "../util/webservice_manager";
 import Constant from "../util/constant_variables";
 import DateSelect from "../util/date_select";
+import PageHeader from "../util/page_header";
+
+import CompanyNoImage from "../images/companyNo.png";
+import NameCardImage from "../images/nameCard.png";
+
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
 //회원관리 페이지 클래스
 export default class UserInfo extends Component {
     constructor(props) {
@@ -60,15 +67,7 @@ export default class UserInfo extends Component {
         this.setState({ sale: e.target.value })
     }
 
-    //기간설정리스너
-    onDateListener = (date) => {
-        console.log('date', date)
-        this.setState({ dateRange: [], date: date });
-    }
-    onDateRangeListener = (dates) => {
-        console.log('dateRange', dates)
-        this.setState({ dateRange: dates, date: 0 });
-    }
+
     render() {
         console.log('approval', this.state.approval)
         console.log('sale', this.state.sale)
@@ -77,8 +76,8 @@ export default class UserInfo extends Component {
                 {/* 서브탑메뉴바 영역 */}
                 <Container>
                     <nav className="topmenubar">
-                        <div className="d-flex topmenubar ">
-                            <Box sx={{ minWidth: 200 }} >
+                        <div className="d-flex topmenubar">
+                            <Box style={{ marginRight: '15px' }} sx={{ minWidth: 190 }} >
                                 <FormControl fullWidth>
                                     <InputLabel>승인여부</InputLabel>
                                     <Select
@@ -95,7 +94,7 @@ export default class UserInfo extends Component {
 
                             {/* 승인됨을 클릭한 경우만 판매건수 콤보박스 활성화 */}
                             {this.state.approval === 0 &&
-                                <Box style={{ marginLeft: '15px' }} sx={{ minWidth: 200 }}>
+                                <Box style={{ marginRight: '15px' }} sx={{ minWidth: 190 }}>
                                     <FormControl fullWidth>
                                         <InputLabel>판매건수</InputLabel>
                                         <Select
@@ -110,31 +109,14 @@ export default class UserInfo extends Component {
                                     </FormControl>
                                 </Box>
                             }
+                            <button className="darknavy" onClick={() => { this.setState({ userRegisterModalVisible: true }) }}><PersonAddIcon /></button>
                         </div>
 
-                        <div className="d-flex flex-row">
-                            <Form >
-                                <div className="d-flex fleft">
-                                    {/*기간설정*/}
-                                    <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
-                                    <Button style={{ marginLeft: '15px' }} variant="outline-primary" onClick={() => { this.setState({ userRegisterModalVisible: true }) }}>회원등록</Button>
-                                </div>
 
-                                <div className="d-flex fright" style={{ marginLeft: '15px' }}>
-                                    <Form.Control
-                                        type="search"
-                                        placeholder="Search"
-                                        aria-label="Search"
-                                        className="searchinput"
-                                    />
-                                    <button className="searchbutton darknavy"><SearchIcon /></button>
-                                </div>
-
-                            </Form>
-                            {
-                                this.state.userRegisterModalVisible === true ? <UserRegisterModal hideButtonClicked={() => { this.setState({ userRegisterModalVisible: false }) }} /> : null
-                            }
-                        </div>
+                        <PageHeader />
+                        {
+                            this.state.userRegisterModalVisible === true ? <UserRegisterModal hideButtonClicked={() => { this.setState({ userRegisterModalVisible: false }) }} /> : null
+                        }
 
                     </nav>
 
@@ -223,14 +205,14 @@ class UserDetailModal extends Component {
 
     componentDidMount() {
         this.callGetCompanyImageAPI().then((response) => {
-            this.setState({companyNoImageURI:URL.createObjectURL(response)})
+            this.setState({ companyNoImageURI: URL.createObjectURL(response) })
         })
         this.callGetcardImageAPI().then((response) => {
             this.setState({ cardImageURI: URL.createObjectURL(response) })
         })
     }
 
-   
+
     //사업자등록증 사진을 가져오는 API
     async callGetCompanyImageAPI() {
         let manager = new WebServiceManager(Constant.serviceURL + "/GetCompanyImage", "post");
@@ -256,35 +238,58 @@ class UserDetailModal extends Component {
         return (
             <div className="modal w-100 h-100" >
 
-                <Modal.Dialog>
+                <Modal.Dialog
+                    size="lg"
+                    centered>
                     <Modal.Header>
                         <Modal.Title>상세보기</Modal.Title>
                         <CloseButton onClick={this.props.hideButtonClicked} />
                     </Modal.Header>
 
                     <Modal.Body>
+
                         <Carousel interval={null}>
                             <Carousel.Item>
                                 <img
-                                    className="d-block w-100"
+                                    className="d-block w-100" height={'450px'}
                                     src={this.state.companyNoImageURI}
                                 />
                             </Carousel.Item>
                             <Carousel.Item>
                                 <img
-                                    className="d-block w-100"
+                                    className="d-block w-100" height={'450px'}
                                     src={this.state.cardImageURI}
                                 />
                             </Carousel.Item>
                         </Carousel>
-                        <p>이름 : {item.username}</p>
-                        <p>사업자 번호 : {item.companyNo}</p>
-                        <p>전화번호 : {item.phone}</p>
-                        <p>가입일시 : {item.registerDate}</p>
-                        <p>주소 : {item.address}</p>
+
+                        <div className="topmenubar">
+                            <table className="w-100">
+                                <tr>
+                                    <td><p><strong>이름</strong></p></td>
+                                    <td><p>{item.username}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><strong>사업자번호</strong></p></td>
+                                    <td><p>{item.companyNo}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><strong>전화번호</strong></p></td>
+                                    <td><p>{item.phone}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><strong>가입일시</strong></p></td>
+                                    <td><p>{item.registerDate}</p></td>
+                                </tr>
+                                <tr>
+                                    <td> <p><strong>주소</strong></p></td>
+                                    <td><p>{item.address}</p></td>
+                                </tr>
+                            </table>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        {item.validate==1 && <Button variant="primary" onClick={() => { this.approve() }}>승인</Button>}
+                        {item.validate == 1 && <Button variant="primary" onClick={() => { this.approve() }}>승인</Button>}
                         <Button variant="primary" onClick={() => { this.approve() }}>수정</Button>
                         <Button variant="danger" onClick={() => { this.approve() }}>탈퇴</Button>
                     </Modal.Footer>
@@ -306,26 +311,83 @@ class UserRegisterModal extends Component {
             companyName: '', //회사상호명
             companyAddress: '', //사업자 주소
             passwd: '',     //비밀번호
+            passwdOk: '', //비밀번호 확인
             companyNoImageURI: '', //사업자 등록증 사진
             nameCardImageURI: '', //명함 사진
+            registerButtonVisible:false, //회원등록 버튼 활성화 체크변수
         }
 
     }
 
-    addCompanyNoImage=(value)=>{
-        this.setState({ companyNoImageURI: value },()=>{
-            this.goCompanyInfo(this.state.companyNoImageURI)
+    //회원등록 활성화 함수
+    onValueChange=(value)=>{
+        this.setState(value,()=>{
+            let isValidForm=true;
+
+            if(this.state.companyNo.trim().replaceAll("-","").length < 10) // 조건 필요시 추가
+                isValidForm=false;
+            if(this.state.passwd.trim().length == 0)
+                isValidForm=false;     
+            if(this.state.passwdOk!=this.state.passwd)
+                isValidForm=false;
+            if(this.state.companyAddress.trim().length==0)
+                isValidForm=false;
+            if(this.state.companyName.trim().length==0)
+                isValidForm=false;
+            if((this.state.companyNoImageURI==undefined)||((this.state.companyNoImageURI=="")))
+                isValidForm=false;
+            if((this.state.nameCardImageURI==undefined)||(this.state.nameCardImageURI==""))
+                isValidForm=false;
+
+            this.setState({registerButtonVisible:isValidForm})
+        })
+
+    }
+
+    goAddUser = () => {
+        this.callAddUserAPI().then((response) => {
+            console.log('adduser', response);
+            if (response.success == 0) {
+                alert("이미 있는 사업자번호입니다");
+            }
+            else if (response.success == -1) {
+                alert("서버 오류로 회원가입에 실패했습니다.");
+            }
+            else {
+                alert('가입 신청 완료', '입력 된 내용 확인 후 승인이 완료됩니다.');
+                this.props.hideButtonClicked()
+
+            }
+        })
+
+    }
+    addCompanyNoImage = (value) => {
+        
+        this.setState({ companyNoImageURI: value }, () => {
+            console.log(value)
+            if(this.state.companyNoImageURI){
+                this.goCompanyInfo(this.state.companyNoImageURI)
+            }
+            this.onValueChange()
         })
     }
-    goCompanyInfo(imageURI){
-        this.callCompanyInfoAPI(imageURI).then((response)=>{
-            if(response.success==0){
+    addNameCardImage =(value)=>{
+        
+        this.setState({nameCardImageURI:value},()=>{
+            console.log(value)
+            this.onValueChange()
+        })
+    }
+    goCompanyInfo(imageURI) {
+        this.callCompanyInfoAPI(imageURI).then((response) => {
+            if (response.success == 0) {
                 alert('사업자 인식 실패')
             }
             else
-                this.setState({companyNo:response.no, companyName:response.name,companyAddress:response.address })
+                this.setState({ companyNo: response.no, companyName: response.name, companyAddress: response.address })
         })
     }
+
     //회원정보 서버에 등록 API
     async callAddUserAPI() {
         const userData = {
@@ -334,7 +396,7 @@ class UserRegisterModal extends Component {
             companyAddress: this.state.companyAddress,
             passwd: this.state.passwd
         };
-        
+
 
         let manager = new WebServiceManager(Constant.serviceURL + "/AddUser", "post");
         manager.addFormData("data", userData);
@@ -349,31 +411,15 @@ class UserRegisterModal extends Component {
         }
     }
     //사업자 등록증 이미지로 텍스트 분석하여 상호, 사업자번호, 소재지 가져오기
-    async callCompanyInfoAPI(imageData){
-        let manager=new WebServiceManager(Constant.serviceURL+"/GetCompanyInfo","post");
-        manager.addBinaryData("file",imageData);
-        let response=await manager.start();
-        if(response.ok){
+    async callCompanyInfoAPI(imageData) {
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetCompanyInfo", "post");
+        manager.addBinaryData("file", imageData);
+        let response = await manager.start();
+        if (response.ok) {
             return response.json();
         }
     }
-    goAddUser = () => {
-        this.callAddUserAPI().then((response) => {
-            console.log('adduser', response);
-            if (response.success == 0) {
-                alert("이미 있는 사업자번호입니다");
-            }
-            else if (response.success == -1) {
-                alert("서버 오류로 회원가입에 실패했습니다.");
-            }
-            else {
-                alert('가입 신청 완료', '입력 된 내용 확인 후 승인이 완료됩니다.');
-                this.props.hideButtonClicked()
-              
-            }
-        })
 
-    }
 
 
     render() {
@@ -381,70 +427,81 @@ class UserRegisterModal extends Component {
         return (
             <div className="modal w-100 h-100" >
 
-                <Modal.Dialog>
+                <Modal.Dialog
+                    size="lg"
+                    centered>
                     <Modal.Header>
                         <Modal.Title>회원등록</Modal.Title>
                         <CloseButton onClick={this.props.hideButtonClicked} />
                     </Modal.Header>
                     {/* 이미지 프리뷰 할지 고민중 */}
                     <Modal.Body>
-                        <Carousel interval={null}>
-                            <Carousel.Item>
-                                <img
-                                    className="d-block w-100"
-                                    src={this.state.companyNoImageURI ? URL.createObjectURL(this.state.companyNoImageURI) : "https://source.unsplash.com/collection/190727/1600x900"}
-                                />
-                            </Carousel.Item>
-                            <Carousel.Item>
-                                <img
-                                    className="d-block w-100"
-                                    src={this.state.nameCardImageURI ? URL.createObjectURL(this.state.nameCardImageURI) : "https://source.unsplash.com/collection/190727/1600x900"}
-                                />
-                            </Carousel.Item>
+                        <div className="w-50 fleft">
+                            <Carousel interval={null}>
+                                <Carousel.Item>
+                                    <img
 
-                        </Carousel>
-                        <form>
+                                        className="d-block w-100" height={'600px'}
+                                        src={this.state.companyNoImageURI ? URL.createObjectURL(this.state.companyNoImageURI) : CompanyNoImage}
+                                    />
+                                </Carousel.Item>
+                                <Carousel.Item>
+                                    <img
+                                        className="d-block w-100" height={'600px'}
+                                        src={this.state.nameCardImageURI ? URL.createObjectURL(this.state.nameCardImageURI) : NameCardImage}
+                                    />
+                                </Carousel.Item>
+
+                            </Carousel>
                             {/* 이미지 파일 업로드 */}
-                            <div>
-                                <input type="file" onChange={(e) => {this.addCompanyNoImage(e.target.files[0]) }} />
-                                <input type="file" onChange={(e) => { this.setState({ nameCardImageURI: e.target.files[0] }) }} />
+                            <div className="w-100">
+                                <input type="file" className="w-50 fleft" onChange={(e) => { this.addCompanyNoImage(e.target.files[0]) }} />
+                                <input type="file" className="w-50 fleft" onChange={(e) => { this.addNameCardImage( e.target.files[0] ) }} />
                             </div>
-                            {/* 회원정보 입력 */}
-                            <div className="background" >
-                                <label>사업자등록 번호</label>
-                                <Form.Control
-                                    type='text' value={this.state.companyNo} onChange={(e) => { this.setState({companyNo:e.target.value}) }}
-                                />
-                            </div>
-                            <div className="background" >
-                                <label>상호명</label>
-                                <Form.Control
-                                    type='text' value={this.state.companyName} onChange={(e) => { this.setState({companyName:e.target.value}) }}
-                                />
-                            </div>
-                            <div className="background" >
-                                <label>사업자 주소</label>
-                                <Form.Control
-                                    type='text' value={this.state.companyAddress} onChange={(e) => { this.setState({companyAddress:e.target.value}) }}
-                                />
-                            </div>
-                            <div className="background" >
-                                <label>비밀번호</label>
-                                <Form.Control
-                                    type='text' value={this.state.passwd} onChange={(e) => { this.setState({passwd:e.target.value}) }}
-                                />
-                            </div>
-                            <div className="background" >
-                                <label>비밀번호 확인</label>
-                                <Form.Control
-                                    type='text' value={this.state.passwd} onChange={(e) => { this.setState({passwd:e.target.value}) }}
-                                />
-                            </div>
-                        </form>
+                        </div>
+
+                        <div className="w-50 fleft" style={{ justifyContent: 'center' }} >
+                            <form>
+                                {/* 회원정보 입력 */}
+                                <div className="background" >
+                                    <label>사업자등록 번호</label>
+                                    <Form.Control
+                                        type='text' value={this.state.companyNo} onChange={(e) => { this.onValueChange({ companyNo: e.target.value})}}
+                                    />
+                                </div>
+                                <div className="background" >
+                                    <label>상호명</label>
+                                    <Form.Control
+                                        type='text' value={this.state.companyName} onChange={(e) => { this.onValueChange({ companyName: e.target.value})}}
+                                    />
+                                </div>
+                                <div className="background" >
+                                    <label>사업자 주소</label>
+                                    <Form.Control
+                                        type='text' value={this.state.companyAddress} onChange={(e) => { this.onValueChange({ companyAddress: e.target.value}) }}
+                                    />
+                                </div>
+                                <div className="background" >
+                                    <label>비밀번호</label>
+                                    <Form.Control
+                                        type='password' value={this.state.passwd} onChange={(e) => { this.onValueChange({ passwd: e.target.value}) }}
+                                    />
+                                </div>
+                                <div className="background" >
+                                    <label>비밀번호 확인</label>
+                                    <Form.Control
+                                        type='password' value={this.state.passwdOk} onChange={(e) => { this.onValueChange({ passwdOk: e.target.value}) }}
+                                    />
+                                    {this.state.passwdOk !== this.state.passwd && <div className="errorMessage">비밀번호가 다릅니다</div>}
+                                </div>
+                            </form>
+                        </div>
+
 
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={this.goAddUser}>회원등록</Button>
+                        {this.state.registerButtonVisible==true ?<Button variant="primary" onClick={this.goAddUser} >회원등록</Button>:<Button variant="secondary" >회원등록</Button>}
+                        
                     </Modal.Footer>
                 </Modal.Dialog>
 

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
 import SearchIcon from '@mui/icons-material/Search';
 import DateSelect from "../util/date_select";
+import PageHeader from "../util/page_header";
 import WebServiceManager from "../util/webservice_manager";
 import Constant from "../util/constant_variables";
 
@@ -24,15 +25,7 @@ export default class Sale extends Component {
             this.setState({ goodsContents: response})
         });
     }
-    //기간설정리스너
-    onDateListener=(date)=>{
-        console.log('date',date)
-        this.setState({dateRange:[],date:date});
-    }
-    onDateRangeListener=(dates)=>{
-        console.log('dateRange',dates)
-        this.setState({dateRange:dates,date:0});
-    }
+   
     async callGetGoodsAPI() {
         let manager = new WebServiceManager(Constant.serviceURL + "/GetGoods?login_id=1");
         let response = await manager.start();
@@ -44,25 +37,7 @@ export default class Sale extends Component {
         return (
             <Container>
                <nav className="topmenubar">
-                    <div className="d-flex flex-row">
-                        <Form>
-                            <div className="fleft">
-                                {/*기간설정*/}
-                                <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
-                            </div>
-
-                            <div className="d-flex fright" style={{ marginLeft: '15px' }}>
-                                <Form.Control
-                                    type="search"
-                                    placeholder="Search"
-                                    aria-label="Search"
-                                    className="searchinput"
-                                />
-                                <button className="searchbutton darknavy"><SearchIcon /></button>
-                            </div>
-
-                        </Form>
-                    </div>
+                  <PageHeader/>
 
                 </nav>
                 <Table bordered hover>
@@ -125,7 +100,7 @@ class SaleItem extends Component {
                     <td>{item.registerDate}</td>
                     <td>{item.price}</td>
                     <td>{item.quantity}</td>
-                    <td><img height="100px" width="100px" src={this.state.goodsFirstImageURI} /></td>
+                    <td width="100px"><img height="50px" width="50px" src={this.state.goodsFirstImageURI} /></td>
                 </tr>
                 {
                     this.state.modalVisible === true && <GoodsDetailItem goodsID={this.goodsID} hideButtonClicked={() => { this.setState({ modalVisible: false }) }} /> 
@@ -183,8 +158,10 @@ class GoodsDetailItem extends Component {
     render() {
      
         return (
-            <div className="modal w-100 h-100">
-                <Modal.Dialog>
+            <div className="modal w-100">
+                <Modal.Dialog  
+                size="lg"
+                centered>
                     <Modal.Header>
                         <Modal.Title>상세보기</Modal.Title>
                         <CloseButton onClick={this.props.hideButtonClicked} />
@@ -192,21 +169,48 @@ class GoodsDetailItem extends Component {
 
                     <Modal.Body>
                         <Carousel interval={null}>
-                            {this.state.goodsImages.map((item, i) => <Carousel.Item><img className="d-block w-100" src={item}/></Carousel.Item>)}
+                            {this.state.goodsImages.map((item, i) => <Carousel.Item><img className="d-block w-100" height={'450px'} src={item}/></Carousel.Item>)}
                         </Carousel>
-                        <h5>판매글 정보</h5>
-                        <p>id: {this.state.goodsDetailContents.id}</p>
-                        <p>userID: {this.state.goodsDetailContents.userID}</p>
-                        <p>name: {this.state.goodsDetailContents.name}</p>
-                        <p>number: {this.state.goodsDetailContents.number}</p>
-                        <p>price: {this.state.goodsDetailContents.price}</p>
-                        <p>hashTag: {this.state.goodsDetailContents.hashTag}</p>
-                        <p>quantity: {this.state.goodsDetailContents.quantity}</p>
-                        <p>genuine: {this.state.goodsDetailContents.genuine}</p>
-                        <p>spec: {this.state.goodsDetailContents.spec}</p>
-                        <p>valid: {this.state.goodsDetailContents.valid}</p>
-                        <p>removeFlag: {this.state.goodsDetailContents.removeFlag}</p>
-                        <p>registerDate: {this.state.goodsDetailContents.registerDate}</p>
+                        <div className="topmenubar">
+                            <table className="w-100">
+                                <tr>
+                                    <td><p><strong>id</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.id}</p></td>
+                                    <td><p><strong>userID</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.userID}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><strong>name</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.name}</p></td>
+                                    <td><p><strong>number</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.number}</p></td>
+                                </tr>
+                                <tr>
+                                    <td> <p><strong>price</strong></p></td>
+                                    <td><p> {this.state.goodsDetailContents.price}</p></td>
+                                    <td> <p><strong>hashTag</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.hashTag}</p></td>
+                                </tr>
+                                <tr>
+                                    <td> <p><strong>quantity</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.quantity}</p></td>
+                                    <td> <p><strong>genuine</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.genuine}</p></td>
+                                </tr>
+                                <tr>
+                                    <td> <p><strong>spec</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.spec}</p></td>
+                                    <td> <p><strong>valid</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.valid}</p></td>
+                                </tr>
+                                <tr>
+                                    <td> <p><strong>removeFlag</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.removeFlag}</p></td>
+                                    <td> <p><strong>registerDate</strong></p></td>
+                                    <td><p>{this.state.goodsDetailContents.registerDate}</p></td>
+                                </tr>
+                            </table>
+                        </div>
 
                     </Modal.Body>
                 </Modal.Dialog>
