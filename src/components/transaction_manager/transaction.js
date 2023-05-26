@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Button, Table, Carousel, Modal, CloseButton } from "react-bootstrap";
-import PageHeader from "../util/page_header";
+import PageHeader from "../../util/page_header";
 
 export default class Transaction extends Component {
     constructor(props) {

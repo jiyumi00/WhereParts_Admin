@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Container,  Table, Carousel, Modal, CloseButton } from "react-bootstrap";
-import PageHeader from "../util/page_header";
-import WebServiceManager from "../util/webservice_manager";
-import Constant from "../util/constant_variables";
+import PageHeader from "../../util/page_header";
+import WebServiceManager from "../../util/webservice_manager";
+import Constant from "../../util/constant_variables";
 
 export default class Sale extends Component {
     constructor(props) {
