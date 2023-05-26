@@ -12,7 +12,7 @@ export default class DashBoard extends Component {
         super(props);
         this.state = {
             selectDate: null,
-            modalVisible: true,
+            modalVisible: false,
             saleContents: [
                 {
                     title: '판매건수 : 23건',
@@ -87,9 +87,9 @@ class DashBoardTopList extends Component {
                 </Card.Header>
 
                 <Card.Body>
-                    <Table className="height textcenter" bordered>
+                    <Table className="height textcenter" >
                         <tbody>
-                            {this.state.priceTopList.map((item, i) => <DashBoardItem item={item} key={i} />)}
+                            {this.state.priceTopList.map((item, i) => <DashBoardItem item={item} index={i} key={i}/>)}
 
                         </tbody>
                     </Table>
@@ -110,7 +110,7 @@ class DashBoardItem extends Component {
     }
     render() {
         const item = this.props.item;
-        const index = this.props.key;
+        const index = this.props.index;
 
         return (
             <>
@@ -158,9 +158,9 @@ class DetailItem extends Component {
                     <Modal.Body>
                         <Carousel interval={null}>
                             <Carousel.Item>
-                                <Table className="height textcenter" bordered>
+                                <Table className="height textcenter" >
                                     <tbody>
-                                        {this.state.priceTopList.map((item, i) => <DashBoardItem item={item} index={i} />)}
+                                        {this.state.priceTopList.map((item, i) => <DashBoardItem item={item} index={i} key={i}/>)}
 
                                     </tbody>
                                 </Table>

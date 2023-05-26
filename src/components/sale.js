@@ -46,7 +46,7 @@ export default class Sale extends Component {
                   <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener}/>
 
                 </nav>
-                <Table bordered hover>
+                <Table  hover>
                     <thead>
                         <tr>
                             <th>판매자</th>
@@ -109,7 +109,7 @@ class SaleItem extends Component {
                     <td width="100px"><img height="50px" width="50px" src={this.state.goodsFirstImageURI} /></td>
                 </tr>
                 {
-                    this.state.modalVisible === true && <GoodsDetailItem goodsID={this.goodsID} hideButtonClicked={() => { this.setState({ modalVisible: false }) }} /> 
+                    this.state.modalVisible === true && <GoodsDetailItem key={this.props.i} goodsID={this.goodsID} hideButtonClicked={() => { this.setState({ modalVisible: false }) }} /> 
                 }
             </>
         )
@@ -179,42 +179,45 @@ class GoodsDetailItem extends Component {
                         </Carousel>
                         <div className="topmenubar">
                             <table className="w-100">
+                                <tbody>
                                 <tr>
-                                    <td><p><strong>id</strong></p></td>
+                                    <th><p>id</p></th>
                                     <td><p>{this.state.goodsDetailContents.id}</p></td>
-                                    <td><p><strong>userID</strong></p></td>
+                                    <th><p>userID</p></th>
                                     <td><p>{this.state.goodsDetailContents.userID}</p></td>
                                 </tr>
                                 <tr>
-                                    <td><p><strong>name</strong></p></td>
+                                    <th><p>name</p></th>
                                     <td><p>{this.state.goodsDetailContents.name}</p></td>
-                                    <td><p><strong>number</strong></p></td>
+                                    <th><p>number</p></th>
                                     <td><p>{this.state.goodsDetailContents.number}</p></td>
                                 </tr>
                                 <tr>
-                                    <td> <p><strong>price</strong></p></td>
+                                    <th> <p>price</p></th>
                                     <td><p> {this.state.goodsDetailContents.price}</p></td>
-                                    <td> <p><strong>hashTag</strong></p></td>
+                                    <th> <p>hashTag</p></th>
                                     <td><p>{this.state.goodsDetailContents.hashTag}</p></td>
                                 </tr>
                                 <tr>
-                                    <td> <p><strong>quantity</strong></p></td>
+                                    <th><p>quantity</p></th>
                                     <td><p>{this.state.goodsDetailContents.quantity}</p></td>
-                                    <td> <p><strong>genuine</strong></p></td>
+                                    <th><p>genuine</p></th>
                                     <td><p>{this.state.goodsDetailContents.genuine}</p></td>
                                 </tr>
                                 <tr>
-                                    <td> <p><strong>spec</strong></p></td>
+                                    <th> <p>spec</p></th>
                                     <td><p>{this.state.goodsDetailContents.spec}</p></td>
-                                    <td> <p><strong>valid</strong></p></td>
+                                    <th> <p>valid</p></th>
                                     <td><p>{this.state.goodsDetailContents.valid}</p></td>
                                 </tr>
                                 <tr>
-                                    <td> <p><strong>removeFlag</strong></p></td>
+                                    <th> <p>removeFlag</p></th>
                                     <td><p>{this.state.goodsDetailContents.removeFlag}</p></td>
-                                    <td> <p><strong>registerDate</strong></p></td>
+                                    <th> <p>registerDate</p></th>
                                     <td><p>{this.state.goodsDetailContents.registerDate}</p></td>
                                 </tr>
+                                </tbody>
+                               
                             </table>
                         </div>
 

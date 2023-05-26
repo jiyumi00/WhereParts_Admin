@@ -18,6 +18,10 @@ thead {
     font-weight: bold;
 }
 
+td{
+    vertical-align:middle;
+    text-align: center;
+}
 input[type=radio] {
     margin-right: 5px;
 }

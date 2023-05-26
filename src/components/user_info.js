@@ -118,7 +118,7 @@ export default class UserInfo extends Component {
                             <button className="darknavy" onClick={() => { this.setState({ userRegisterModalVisible: true }) }}><PersonAddIcon /></button>
                         </div>
 
-
+                        
                         <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener}/>
                         {
                             this.state.userRegisterModalVisible === true ? <UserRegisterModal hideButtonClicked={() => { this.setState({ userRegisterModalVisible: false }) }} /> : null
@@ -127,7 +127,7 @@ export default class UserInfo extends Component {
                     </nav>
 
                     {/* 테이블 영역 */}
-                    <Table bordered hover>
+                    <Table hover>
                         <thead>
                             <tr>
                                 <th>상호</th>
@@ -269,33 +269,34 @@ class UserDetailModal extends Component {
                             </Carousel.Item>
                         </Carousel>
 
-                        <div className="topmenubar">
-                            <table className="w-100">
+                            <table className="w-100 topmenubar">
+                                <tbody>
                                 <tr>
-                                    <td><p><strong>이름</strong></p></td>
+                                    <th><p>이름</p></th>
                                     <td><p>{item.username}</p></td>
                                 </tr>
                                 <tr>
-                                    <td><p><strong>사업자번호</strong></p></td>
+                                    <th><p>사업자번호</p></th>
                                     <td><p>{item.companyNo}</p></td>
                                 </tr>
                                 <tr>
-                                    <td><p><strong>전화번호</strong></p></td>
+                                    <th><p>전화번호</p></th>
                                     <td><p>{item.phone}</p></td>
                                 </tr>
                                 <tr>
-                                    <td><p><strong>가입일시</strong></p></td>
+                                    <th><p>가입일시</p></th>
                                     <td><p>{item.registerDate}</p></td>
                                 </tr>
                                 <tr>
-                                    <td> <p><strong>주소</strong></p></td>
+                                    <th><p>주소</p></th>
                                     <td><p>{item.address}</p></td>
                                 </tr>
+                                </tbody>
+                                
                             </table>
-                        </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        {item.validate == 1 && <Button variant="primary" onClick={() => { this.approveButtonClicked() }}>승인</Button>}
+                        {item.validate === 1 && <Button variant="primary" onClick={() => { this.approveButtonClicked() }}>승인</Button>}
                         <Button variant="primary" onClick={() => { this.approveButtonClicked() }}>수정</Button>
                         <Button variant="danger" onClick={() => { this.approveButtonClicked() }}>탈퇴</Button>
                     </Modal.Footer>
@@ -332,17 +333,17 @@ class UserRegisterModal extends Component {
 
             if (this.state.companyNo.trim().replaceAll("-", "").length < 10) // 조건 필요시 추가
                 isValidForm = false;
-            if (this.state.passwd.trim().length == 0)
+            if (this.state.passwd.trim().length === 0)
                 isValidForm = false;
-            if (this.state.passwdOk != this.state.passwd)
+            if (this.state.passwdOk !== this.state.passwd)
                 isValidForm = false;
-            if (this.state.companyAddress.trim().length == 0)
+            if (this.state.companyAddress.trim().length === 0)
                 isValidForm = false;
-            if (this.state.companyName.trim().length == 0)
+            if (this.state.companyName.trim().length === 0)
                 isValidForm = false;
-            if ((this.state.companyNoImageURI == undefined) || ((this.state.companyNoImageURI == "")))
+            if ((this.state.companyNoImageURI === undefined) || ((this.state.companyNoImageURI === "")))
                 isValidForm = false;
-            if ((this.state.nameCardImageURI == undefined) || (this.state.nameCardImageURI == ""))
+            if ((this.state.nameCardImageURI === undefined) || (this.state.nameCardImageURI === ""))
                 isValidForm = false;
 
             this.setState({ registerButtonVisible: isValidForm })
@@ -353,10 +354,10 @@ class UserRegisterModal extends Component {
     goAddUser = () => {
         this.callAddUserAPI().then((response) => {
             console.log('adduser', response);
-            if (response.success == 0) {
+            if (response.success === 0) {
                 alert("이미 있는 사업자번호입니다");
             }
-            else if (response.success == -1) {
+            else if (response.success === -1) {
                 alert("서버 오류로 회원가입에 실패했습니다.");
             }
             else {
@@ -386,11 +387,12 @@ class UserRegisterModal extends Component {
     }
     goCompanyInfo(imageURI) {
         this.callCompanyInfoAPI(imageURI).then((response) => {
-            if (response.success == 0) {
+            if (response.success === 0) {
                 alert('사업자 인식 실패')
             }
             else
                 this.setState({ companyNo: response.no, companyName: response.name, companyAddress: response.address })
+                this.onValueChange();
         })
     }
 
@@ -510,7 +512,7 @@ class UserRegisterModal extends Component {
 
                     </Modal.Body>
                     <Modal.Footer>
-                        {this.state.registerButtonVisible == true ? <Button variant="primary" onClick={this.goAddUser} >회원등록</Button> : <Button variant="secondary" disabled >회원등록</Button>}
+                        {this.state.registerButtonVisible === true ? <Button variant="primary" onClick={this.goAddUser} >회원등록</Button> : <Button variant="secondary" disabled >회원등록</Button>}
 
                     </Modal.Footer>
                 </Modal.Dialog>

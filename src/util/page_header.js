@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
+import {Form } from "react-bootstrap";
 import SearchIcon from '@mui/icons-material/Search';
 
 import DatePicker from "react-datepicker";
@@ -11,6 +11,7 @@ export default class PageHeader extends Component {
         super(props);
 
         this.state = {
+            searchText:'',
             startDate:null,
             endDate:null,
             date:0,
@@ -27,16 +28,17 @@ export default class PageHeader extends Component {
         this.props.onDateRangeListener(dates);
     }
     render() {
+        console.log('searchText',this.state.searchText)
         return (
                
                     <div className="d-flex flex-row">
                         <Form>
                             <div className="d-flex fleft">
                                 {/* <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} /> */}
-                                <div class="btn-group" role="group" aria-label="Basic example">
-                                    <button type="button" class={this.state.date==1?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(1)}}>일</button>
-                                    <button type="button" class={this.state.date==2?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(2)}}>주</button>
-                                    <button type="button" class={this.state.date==3?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(3)}}>월</button>
+                                <div className="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" className={this.state.date==1?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(1)}}>일</button>
+                                    <button type="button" className={this.state.date==2?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(2)}}>주</button>
+                                    <button type="button" className={this.state.date==3?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(3)}}>월</button>
                                     <DatePicker 
                                         selectsRange={true}
                                         className="datepicker-one"
@@ -52,6 +54,7 @@ export default class PageHeader extends Component {
 
                             <div className="d-flex fright" style={{marginLeft:'15px'}}>
                                 <Form.Control
+                                    onChange={(e)=>{this.setState({searchText:e.target.value})}}                   
                                     type="search"
                                     placeholder="Search"
                                     aria-label="Search"

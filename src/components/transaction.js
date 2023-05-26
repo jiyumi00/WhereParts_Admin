@@ -54,7 +54,7 @@ export default class Transaction extends Component {
 
                 </nav>
 
-                <Table bordered hover>
+                <Table hover>
                     <thead>
                         <tr>
                             {
@@ -139,30 +139,31 @@ class SalesDetailModal extends Component {
                                 />
                             </Carousel.Item>
                         </Carousel>
-                        <div className="topmenubar">
-                            <table className="w-100">
+                            <table className="topmenubar w-100">
+                                <tbody>
                                 <tr>
-                                    <td><p><strong>판매글 정보</strong></p></td>
+                                    <th><p>판매글 정보</p></th>
                                     <td><p>내용</p></td>
                                 </tr>
                                 <tr>
-                                    <td><p><strong>판매자에 대한 필요한 정보(주소)</strong></p></td>
+                                    <th><p>판매자에 대한 필요한 정보(주소)</p></th>
                                     <td><p>내용</p></td>
                                 </tr>
                                 <tr>
-                                    <td><p><strong>판매금액</strong></p></td>
+                                    <th><p>판매금액</p></th>
                                     <td><p>내용</p></td>
                                 </tr>
                                 <tr>
-                                    <td><p><strong>수량</strong></p></td>
+                                    <th><p>수량</p></th>
                                     <td><p>내용</p></td>
                                 </tr>
                                 <tr>
-                                    <td> <p><strong>올린날짜</strong></p></td>
+                                    <th> <p>올린날짜</p></th>
                                     <td><p>내용</p></td>
                                 </tr>
+                                </tbody>
+                               
                             </table>
-                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="primary" onClick={() => { this.approve() }}>알림</Button>
