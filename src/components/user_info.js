@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-
 import Select from '@mui/material/Select';
 
 import WebServiceManager from "../util/webservice_manager";
@@ -49,7 +48,7 @@ export default class UserInfo extends Component {
             return response.json();
 
     }
-
+ 
     //승인여부에 관한 드롭박스 아이템 선택시 value값을 받아오는 핸들러
     //테이블 새로 불러올때 사용예정
     //아이템이 새로 선택될때 이벤트가 발생하여 approval 값을 갱신해줌
@@ -65,7 +64,15 @@ export default class UserInfo extends Component {
         console.log(e)
         this.setState({ sale: e.target.value })
     }
-
+    //기간설정리스너
+    onDateListener = (date) => {
+        console.log('date', date)
+        this.setState({ dateRange: [], date: date });
+    }
+    onDateRangeListener = (dates) => {
+        console.log('dateRange', dates[0])
+        this.setState({ dateRange: dates, date: 0 });
+    }
 
     render() {
         console.log('approval', this.state.approval)
@@ -112,7 +119,7 @@ export default class UserInfo extends Component {
                         </div>
 
 
-                        <PageHeader />
+                        <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener}/>
                         {
                             this.state.userRegisterModalVisible === true ? <UserRegisterModal hideButtonClicked={() => { this.setState({ userRegisterModalVisible: false }) }} /> : null
                         }
@@ -198,7 +205,7 @@ class UserDetailModal extends Component {
             cardImageURI: '' //cardImageURI:명함 사진
         }
     }
-    approve = () => {
+    approveButtonClicked = () => {
         alert('알림문자를 보냈습니다.')
     }
 
@@ -288,9 +295,9 @@ class UserDetailModal extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        {item.validate == 1 && <Button variant="primary" onClick={() => { this.approve() }}>승인</Button>}
-                        <Button variant="primary" onClick={() => { this.approve() }}>수정</Button>
-                        <Button variant="danger" onClick={() => { this.approve() }}>탈퇴</Button>
+                        {item.validate == 1 && <Button variant="primary" onClick={() => { this.approveButtonClicked() }}>승인</Button>}
+                        <Button variant="primary" onClick={() => { this.approveButtonClicked() }}>수정</Button>
+                        <Button variant="danger" onClick={() => { this.approveButtonClicked() }}>탈퇴</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
 
@@ -313,32 +320,32 @@ class UserRegisterModal extends Component {
             passwdOk: '', //비밀번호 확인
             companyNoImageURI: '', //사업자 등록증 사진
             nameCardImageURI: '', //명함 사진
-            registerButtonVisible:false, //회원등록 버튼 활성화 체크변수
+            registerButtonVisible: false, //회원등록 버튼 활성화 체크변수
         }
 
     }
 
     //회원등록 활성화 함수
-    onValueChange=(value)=>{
-        this.setState(value,()=>{
-            let isValidForm=true;
+    onValueChange = (value) => {
+        this.setState(value, () => {
+            let isValidForm = true;
 
-            if(this.state.companyNo.trim().replaceAll("-","").length < 10) // 조건 필요시 추가
-                isValidForm=false;
-            if(this.state.passwd.trim().length == 0)
-                isValidForm=false;     
-            if(this.state.passwdOk!=this.state.passwd)
-                isValidForm=false;
-            if(this.state.companyAddress.trim().length==0)
-                isValidForm=false;
-            if(this.state.companyName.trim().length==0)
-                isValidForm=false;
-            if((this.state.companyNoImageURI==undefined)||((this.state.companyNoImageURI=="")))
-                isValidForm=false;
-            if((this.state.nameCardImageURI==undefined)||(this.state.nameCardImageURI==""))
-                isValidForm=false;
+            if (this.state.companyNo.trim().replaceAll("-", "").length < 10) // 조건 필요시 추가
+                isValidForm = false;
+            if (this.state.passwd.trim().length == 0)
+                isValidForm = false;
+            if (this.state.passwdOk != this.state.passwd)
+                isValidForm = false;
+            if (this.state.companyAddress.trim().length == 0)
+                isValidForm = false;
+            if (this.state.companyName.trim().length == 0)
+                isValidForm = false;
+            if ((this.state.companyNoImageURI == undefined) || ((this.state.companyNoImageURI == "")))
+                isValidForm = false;
+            if ((this.state.nameCardImageURI == undefined) || (this.state.nameCardImageURI == ""))
+                isValidForm = false;
 
-            this.setState({registerButtonVisible:isValidForm})
+            this.setState({ registerButtonVisible: isValidForm })
         })
 
     }
@@ -361,18 +368,18 @@ class UserRegisterModal extends Component {
 
     }
     addCompanyNoImage = (value) => {
-        
+
         this.setState({ companyNoImageURI: value }, () => {
             console.log(value)
-            if(this.state.companyNoImageURI){
+            if (this.state.companyNoImageURI) {
                 this.goCompanyInfo(this.state.companyNoImageURI)
             }
             this.onValueChange()
         })
     }
-    addNameCardImage =(value)=>{
-        
-        this.setState({nameCardImageURI:value},()=>{
+    addNameCardImage = (value) => {
+
+        this.setState({ nameCardImageURI: value }, () => {
             console.log(value)
             this.onValueChange()
         })
@@ -452,44 +459,48 @@ class UserRegisterModal extends Component {
                                 </Carousel.Item>
 
                             </Carousel>
-                            {/* 이미지 파일 업로드 */}
-                            <div className="w-100">
-                                <input type="file" className="w-50 fleft" onChange={(e) => { this.addCompanyNoImage(e.target.files[0]) }} />
-                                <input type="file" className="w-50 fleft" onChange={(e) => { this.addNameCardImage( e.target.files[0] ) }} />
-                            </div>
                         </div>
 
                         <div className="w-50 fleft" style={{ justifyContent: 'center' }} >
                             <form>
+                                {/* 이미지 파일 업로드 */}
+                                <div className="background">
+                                    <label>사업자등록증 파일</label>
+                                    <Form.Control type="file" onChange={(e) => { this.addCompanyNoImage(e.target.files[0]) }} />
+                                </div>
+                                <div className="background">
+                                    <label>명함 파일</label>
+                                    <Form.Control type="file" onChange={(e) => { this.addNameCardImage(e.target.files[0]) }} />
+                                </div>
                                 {/* 회원정보 입력 */}
                                 <div className="background" >
                                     <label>사업자등록 번호</label>
                                     <Form.Control
-                                        type='text' value={this.state.companyNo} onChange={(e) => { this.onValueChange({ companyNo: e.target.value})}}
+                                        type='text' value={this.state.companyNo} onChange={(e) => { this.onValueChange({ companyNo: e.target.value }) }}
                                     />
                                 </div>
                                 <div className="background" >
                                     <label>상호명</label>
                                     <Form.Control
-                                        type='text' value={this.state.companyName} onChange={(e) => { this.onValueChange({ companyName: e.target.value})}}
+                                        type='text' value={this.state.companyName} onChange={(e) => { this.onValueChange({ companyName: e.target.value }) }}
                                     />
                                 </div>
                                 <div className="background" >
                                     <label>사업자 주소</label>
                                     <Form.Control
-                                        type='text' value={this.state.companyAddress} onChange={(e) => { this.onValueChange({ companyAddress: e.target.value}) }}
+                                        type='text' as="textarea" cols="2" value={this.state.companyAddress} onChange={(e) => { this.onValueChange({ companyAddress: e.target.value }) }}
                                     />
                                 </div>
                                 <div className="background" >
                                     <label>비밀번호</label>
                                     <Form.Control
-                                        type='password' value={this.state.passwd} onChange={(e) => { this.onValueChange({ passwd: e.target.value}) }}
+                                        type='password' value={this.state.passwd} onChange={(e) => { this.onValueChange({ passwd: e.target.value }) }}
                                     />
                                 </div>
                                 <div className="background" >
                                     <label>비밀번호 확인</label>
                                     <Form.Control
-                                        type='password' value={this.state.passwdOk} onChange={(e) => { this.onValueChange({ passwdOk: e.target.value}) }}
+                                        type='password' value={this.state.passwdOk} onChange={(e) => { this.onValueChange({ passwdOk: e.target.value }) }}
                                     />
                                     {this.state.passwdOk !== this.state.passwd && <div className="errorMessage">비밀번호가 다릅니다</div>}
                                 </div>
@@ -499,8 +510,8 @@ class UserRegisterModal extends Component {
 
                     </Modal.Body>
                     <Modal.Footer>
-                        {this.state.registerButtonVisible==true ?<Button variant="primary" onClick={this.goAddUser} >회원등록</Button>:<Button variant="secondary" disabled>회원등록</Button>}
-                        
+                        {this.state.registerButtonVisible == true ? <Button variant="primary" onClick={this.goAddUser} >회원등록</Button> : <Button variant="secondary" disabled >회원등록</Button>}
+
                     </Modal.Footer>
                 </Modal.Dialog>
 

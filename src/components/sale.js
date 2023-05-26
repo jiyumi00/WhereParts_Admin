@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
-
+import { Container,  Table, Carousel, Modal, CloseButton } from "react-bootstrap";
 import PageHeader from "../util/page_header";
 import WebServiceManager from "../util/webservice_manager";
 import Constant from "../util/constant_variables";
@@ -24,7 +23,15 @@ export default class Sale extends Component {
             this.setState({ goodsContents: response})
         });
     }
-   
+     //기간설정리스너
+     onDateListener = (date) => {
+        console.log('date', date)
+        this.setState({ dateRange: [], date: date });
+    }
+    onDateRangeListener = (dates) => {
+        console.log('dateRange', dates)
+        this.setState({ dateRange: dates, date: 0 });
+    }
     async callGetGoodsAPI() {
         let manager = new WebServiceManager(Constant.serviceURL + "/GetGoods?login_id=1");
         let response = await manager.start();
@@ -36,7 +43,7 @@ export default class Sale extends Component {
         return (
             <Container>
                <nav className="topmenubar">
-                  <PageHeader/>
+                  <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener}/>
 
                 </nav>
                 <Table bordered hover>

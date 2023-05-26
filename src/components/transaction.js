@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Container, Button, Table, Carousel, Modal, CloseButton, Form } from "react-bootstrap";
+import { Container, Button, Table, Carousel, Modal, CloseButton } from "react-bootstrap";
 import PageHeader from "../util/page_header";
-
 
 export default class Transaction extends Component {
     constructor(props) {
@@ -22,7 +21,7 @@ export default class Transaction extends Component {
             ],
         }
     }
-   
+
     //라디오버튼리스너
     handleChange = (e) => {
         this.setState({ selectValue: e.target.value });
@@ -51,7 +50,7 @@ export default class Transaction extends Component {
 
                     </div>
 
-                    <PageHeader/>
+                    <PageHeader />
 
                 </nav>
 
@@ -122,15 +121,15 @@ class SalesDetailModal extends Component {
         return (
             <div className="modal w-100 height" >
                 <Modal.Dialog
-                size="lg"
-                centered>
+                    size="lg"
+                    centered>
                     <Modal.Header>
                         <Modal.Title>상세보기</Modal.Title>
                         <CloseButton onClick={this.props.onHide} />
                     </Modal.Header>
 
                     <Modal.Body>
-                        
+
                         <Carousel interval={null}>
                             <Carousel.Item>
                                 <img
