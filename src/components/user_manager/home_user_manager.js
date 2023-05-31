@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Table} from "react-bootstrap";
+import { Container, Table } from "react-bootstrap";
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -13,27 +13,42 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import ModalUserDetail from '../user_manager/modal_user_detail';
 import ModalUserRegister from '../user_manager/modal_user_register'
 
+import Pagenation2 from "../../util/pagenation2";
+
 export default class UserManager extends Component {
     constructor(props) {
         super(props);
-        this.contents = [];
+
+        this.itemCountPerPage = 17; //한페이지당 보여질 리스트 갯수
+        this.pageCountPerPage = 5;
+
+        this.contents = []; //서버에서 가져온 원본 contents
         this.state = {
+            modalVisible: false, //상품 모달
+           
+            userContents: [], //회원정보데이터
+            item:[],
+            selectedItemIndex: null,
+
             userRegisterModalVisible: false,
             approval: '', //승인여부 드롭박스 2:전체 , 0:승인됨 , 1:승인안됨
             sale: '', //판매건수 드롭박스 2:전체, max:높은순, min:낮은순
-            userContents: [], //회원정보데이터
+
             date: 0,  // 0: 설정x, 1:today, 2:week, 3:month
-            dateRange: [] //기간 범위
+            dateRange: [], //기간 범위
+            
+            currentPage: 1,      // 현재 페이지 (setCurrentPage()에서 변경됨)
+            offset: 0            //현재페이지에서 시작할 item index
         }
     }
 
     componentDidMount() {
         this.callGetUsersAPI().then((response) => {
             console.log('user', response)
-            this.setState({ userContents: response })
+            this.contents = response;
+
+            this.setState({ userContents: this.contents })
         })
-
-
     }
 
     //회원 정보 가져오는 API
@@ -45,7 +60,18 @@ export default class UserManager extends Component {
             return response.json();
 
     }
-
+    //프로젝트 리스트에서 하나의 아이템을 선택하면 DetailPopup창을 띄우고 현재 선택된 아이템의 index 설정
+    setItemIndex = (item) => {
+        this.setState({
+            modalVisible: !this.state.modalVisible,
+            item:item
+        });
+    }
+    //Pagenation에서 몇페이지의 내용을 볼지 선택 (페이지를 선택하면 현재의 페이지에따라 offset 변경)
+    setCurrentPage = (page) => {
+        let lastOffset = (page - 1) * this.itemCountPerPage;
+        this.setState({ currentPage: page, offset: lastOffset });
+    };
     //승인여부에 관한 드롭박스 아이템 선택시 value값을 받아오는 핸들러
     //테이블 새로 불러올때 사용예정
     //아이템이 새로 선택될때 이벤트가 발생하여 approval 값을 갱신해줌
@@ -117,14 +143,17 @@ export default class UserManager extends Component {
 
 
                         <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
-                        {
-                            this.state.userRegisterModalVisible === true ? <ModalUserRegister hideButtonClicked={() => { this.setState({ userRegisterModalVisible: false }) }} /> : null
-                        }
+
 
                     </nav>
-
+                    {
+                        this.state.userRegisterModalVisible === true ? <ModalUserRegister hideButtonClicked={() => { this.setState({ userRegisterModalVisible: false }) }} /> : null
+                    }
+                    {
+                        this.state.modalVisible && <ModalUserDetail item={this.state.item} hideButtonClicked={this.setItemIndex} />
+                    }
                     {/* 테이블 영역 */}
-                    <Table hover>
+                    <Table hover style={{ marginBottom: 5 }}>
                         <thead>
                             <tr>
                                 <th>상호</th>
@@ -138,10 +167,16 @@ export default class UserManager extends Component {
                         </thead>
                         {/* 튜플영역을 map을 사용하여 하나씩 받아와 뿌려주도록 구성함 */}
                         <tbody>
-                            {this.state.userContents.map((item, i) => <UserManagerItems item={item} key={i} />)}
+                            {
+                                this.state.userContents.length > 0 && this.state.userContents.slice(this.state.offset, this.state.offset + this.itemCountPerPage).map((item, i) =>
+                                    <UserManagerItems item={item} key={i}  listener={(item)=>this.setItemIndex(item)} />)
+                            }
                         </tbody>
                     </Table>
-
+                    <footer className="w-100 p-2" style={{ textAlign: 'center' }}>
+                        {this.state.userContents.length>0 && (
+                        <Pagenation2 itemCount={this.state.userContents.length} pageCountPerPage={this.pageCountPerPage} itemCountPerPage={this.itemCountPerPage} currentPage={this.state.currentPage} clickListener={this.setCurrentPage} />
+                        )}</footer>
 
                 </Container>
             </div>
@@ -158,34 +193,27 @@ export default class UserManager extends Component {
 class UserManagerItems extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            modalVisible: false
-        }
 
+    }
+    onClickListener = () => {
+        this.props.listener(this.props.item);
     }
     render() {
         const item = this.props.item;
         return (
-            <>
-                <tr onClick={() => { this.setState({ modalVisible: true }) }}>
-                    <td>{item.id}</td>
-                    <td>{item.companyNo}</td>
-                    <td>{item.phone}</td>
-                    <td>{item.registerDate}</td>
-                    <td>{item.validate}</td>
-                    {/* 0:승인됨, 1:승인안됨 */}
-                    {item.validate === 0
-                        ? (<td>O</td>)
-                        : (<td>X</td>)
-                    }
-                    <td>{item.sale}</td>
-                </tr>
-                {
-                    this.state.modalVisible === true ? <ModalUserDetail item={item} hideButtonClicked={() => { this.setState({ modalVisible: false }) }} /> : null
+            <tr onClick={this.onClickListener}>
+                <td>{item.id}</td>
+                <td>{item.companyNo}</td>
+                <td>{item.phone}</td>
+                <td>{item.registerDate}</td>
+                <td>{item.validate}</td>
+                {/* 0:승인됨, 1:승인안됨 */}
+                {item.validate === 0
+                    ? (<td>O</td>)
+                    : (<td>X</td>)
                 }
-
-            </>
-
+                <td>{item.sale}</td>
+            </tr>
         )
 
     }

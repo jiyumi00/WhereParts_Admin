@@ -5,14 +5,16 @@ import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from '@fullcalendar/react';
 import { Card, Button, Table, Carousel, Modal, CloseButton } from "react-bootstrap";
 
-
-
+import DashBoardDetail from "./modal_dashboard_detail";
+import Constant from "../../util/constant_variables";
 export default class DashBoard extends Component {
     constructor(props) {
         super(props);
+         this.today=new Date()
+        
         this.state = {
             selectDate: null,
-            modalVisible: false,
+            modalVisible: true,
             saleContents: [
                 {
                     title: '판매건수 : 23건',
@@ -24,10 +26,14 @@ export default class DashBoard extends Component {
                 }]
         }
     }
+    componentDidMount(){
+        this.setState({selectDate:Constant.DateToString(new Date())})
+    }
     dateClicked = (info) => { //해당 날짜 클릭했을 경우
         this.setState({ modalVisible: true, selectDate: info.dateStr })
     }
     render() {
+    
         return (
             <>
                 <div className="background location">
@@ -89,14 +95,23 @@ class DashBoardTopList extends Component {
                 <Card.Body>
                     <Table className="height textcenter" >
                         <tbody>
-                            {this.state.priceTopList.map((item, i) => <DashBoardItem item={item} index={i} key={i}/>)}
+                            {this.state.priceTopList.map((item, i) => 
+                            
+                            <tr valign="middle">
+                            <td>{i + 1}</td>
+                            <td>{item.name}</td>
+                            <td>{item.price}</td>
+                             </tr>
+                            
+                            
+                            )}
 
                         </tbody>
                     </Table>
                 </Card.Body>
                 <Card.Footer className="p-3">
                     <Button onClick={this.topLinkDetailClicked} style={{ backgroundColor: '#F7F7F7', color: 'blue', borderColor: '#F7F7F7' }}>더보기</Button>
-                    {this.state.modalVisible && <DetailItem hideModal={() => { this.setState({ modalVisible: false }) }} />}
+                    {this.state.modalVisible && <DashBoardDetail hideModal={() => { this.setState({ modalVisible: false }) }} />}
                 </Card.Footer>
             </Card>
 
@@ -104,77 +119,3 @@ class DashBoardTopList extends Component {
     }
 }
 
-class DashBoardItem extends Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        const item = this.props.item;
-        const index = this.props.index;
-
-        return (
-            <>
-                <tr valign="middle">
-                    <td>{index + 1}</td>
-                    <td>{item.name}</td>
-                    <td>{item.price}</td>
-                </tr>
-            </>
-
-        )
-
-    }
-}
-
-class DetailItem extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            priceTopList: [
-                { name: "인제정비", price: 2554000, },
-                { name: '부산정비', price: 203400 },
-                { name: '마산정비', price: 232000 },
-                { name: '김해정비', price: 12000 },
-                { name: '울산정비', price: 15000 },
-                { name: '포항정비', price: 2000 },
-                { name: '부산정비', price: 2000 },
-                { name: '부산정비', price: 2000 },
-                { name: '부산정비', price: 2000 },
-                { name: '서울정비', price: 2000 }]
-        }
-    }
-
-    render() {
-
-        return (
-            <div className="modal width height" >
-
-                <Modal.Dialog
-                    centered>
-                    <Modal.Header>
-                        <Modal.Title>상세보기</Modal.Title>
-                        <CloseButton onClick={this.props.hideModal} />
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Carousel interval={null}>
-                            <Carousel.Item>
-                                <Table className="height textcenter" >
-                                    <tbody>
-                                        {this.state.priceTopList.map((item, i) => <DashBoardItem item={item} index={i} key={i}/>)}
-
-                                    </tbody>
-                                </Table>
-                            </Carousel.Item>
-                        </Carousel>
-
-                    </Modal.Body>
-                    <Modal.Footer>
-
-                    </Modal.Footer>
-                </Modal.Dialog>
-
-
-            </div>
-        )
-    }
-}
