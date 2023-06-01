@@ -18,7 +18,7 @@ import Pagenation2 from "../../util/pagenation2";
 export default class UserManager extends Component {
     constructor(props) {
         super(props);
-
+        
         this.oneWeekAgo= Constant.getOneWeekAgo();
         this.oneMonthAgo=Constant.getOneMonthAgo();
 
@@ -41,7 +41,9 @@ export default class UserManager extends Component {
             dateRange: [], //기간 범위
             
             currentPage: 1,      // 현재 페이지 (setCurrentPage()에서 변경됨)
-            offset: 0            //현재페이지에서 시작할 item index
+            offset: 0,            //현재페이지에서 시작할 item index
+
+            
         }
     }
 
@@ -93,39 +95,57 @@ export default class UserManager extends Component {
      //기간설정리스너
      onDateListener = (date) => {
         console.log('date', date)
-        this.setState({userContents:this.dataFiltering(date)})
+        this.setState({userContents:this.dataFiltering(date,'')})
     }
     onDateRangeListener = (dates) => {
         console.log('dateRange', dates)
-        this.setState({ userContents:this.dataFiltering(dates) });
+        this.setState({ userContents:this.dataFiltering(dates,'') });
     }
+    searchTextListener =(text)=>{
+        console.log('searchtext',text)
+        this.setState({userContents:this.dataFiltering('',text)})
+     
+    }
+
      //기간설정에 따른 데이터필터링
-    dataFiltering(date){
+    dataFiltering(date,text){
+        console.log('date',date)
         let filteredContents=this.contents;
-        if(date==1){
+        
+        if(date===1){
             filteredContents=filteredContents.filter((item)=>{
                 return new Date(item.registerDate) == this.today
             }) 
             
         }
-        else if(date==2){
+        else if(date===2){
             console.log('일주일 전',this.oneWeekAgo)
             filteredContents=filteredContents.filter((item)=>{
                 return new Date(item.registerDate) >= this.oneWeekAgo
             }) 
             
         }
-        else if(date==3){
+        else if(date===3){
             console.log('한달 전',this.oneMonthAgo)
            filteredContents=filteredContents.filter((item)=>{
              return new Date(item.registerDate) >= this.oneMonthAgo
            })
         }
-        else if(date.length==2){
+        else if(date.length===2){
             filteredContents=filteredContents.filter((item)=>{
                 return new Date(item.registerDate) >= date[0] && new Date(item.registerDate) <= date[1]
               })
         }
+        if (text!="")
+        {
+            filteredContents=filteredContents.filter((item) => {   
+                console.log('keyword: ',text);
+                console.log('item',item)
+                if(item.companyNo.includes(text))
+                    return true
+              });
+        }
+        
         return filteredContents
     }
     render() {
@@ -173,12 +193,12 @@ export default class UserManager extends Component {
                         </div>
 
 
-                        <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
+                        <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} searchTextListener={(text)=>this.searchTextListener(text)}/>
 
 
                     </nav>
                     {
-                        this.state.userRegisterModalVisible === true ? <ModalUserRegister hideButtonClicked={() => { this.setState({ userRegisterModalVisible: false }) }} /> : null
+                        this.state.userRegisterModalVisible && <ModalUserRegister hideButtonClicked={() => { this.setState({ userRegisterModalVisible: false }) }} />
                     }
                     {
                         this.state.modalVisible && <ModalUserDetail item={this.state.item} hideButtonClicked={this.setItemIndex} />
