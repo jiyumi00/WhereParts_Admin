@@ -23,6 +23,7 @@ export default class PageHeader extends Component {
         this.props.onDateListener(value);
     }
     setChangeDate=(dates)=>{
+        console.log('dates',dates)
         const [start,end]=dates;
         this.setState({startDate:start,endDate:end})
         this.props.onDateRangeListener(dates);

@@ -20,7 +20,14 @@ export default class Constant{
         let month=date.getMonth() + 1;
         let day=date.getDate();
         return `${year}-${month >= 10 ? month : '0' + month}-${day >= 10 ? day : '0' + day}`
-
+    }
+    static getOneWeekAgo(){
+        let today=new Date()
+        return new Date(today.setDate(today.getDate()-7))
+    }
+    static getOneMonthAgo(){
+        let today=new Date()
+        return new Date(today.setMonth(today.getMonth()-1))
     }
 }
 

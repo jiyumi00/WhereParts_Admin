@@ -19,6 +19,9 @@ export default class UserManager extends Component {
     constructor(props) {
         super(props);
 
+        this.oneWeekAgo= Constant.getOneWeekAgo();
+        this.oneMonthAgo=Constant.getOneMonthAgo();
+
         this.itemCountPerPage = 17; //한페이지당 보여질 리스트 갯수
         this.pageCountPerPage = 5;
 
@@ -87,16 +90,44 @@ export default class UserManager extends Component {
         console.log(e)
         this.setState({ sale: e.target.value })
     }
-    //기간설정리스너
-    onDateListener = (date) => {
+     //기간설정리스너
+     onDateListener = (date) => {
         console.log('date', date)
-        this.setState({ dateRange: [], date: date });
+        this.setState({userContents:this.dataFiltering(date)})
     }
     onDateRangeListener = (dates) => {
-        console.log('dateRange', dates[0])
-        this.setState({ dateRange: dates, date: 0 });
+        console.log('dateRange', dates)
+        this.setState({ userContents:this.dataFiltering(dates) });
     }
-
+     //기간설정에 따른 데이터필터링
+    dataFiltering(date){
+        let filteredContents=this.contents;
+        if(date==1){
+            filteredContents=filteredContents.filter((item)=>{
+                return new Date(item.registerDate) == this.today
+            }) 
+            
+        }
+        else if(date==2){
+            console.log('일주일 전',this.oneWeekAgo)
+            filteredContents=filteredContents.filter((item)=>{
+                return new Date(item.registerDate) >= this.oneWeekAgo
+            }) 
+            
+        }
+        else if(date==3){
+            console.log('한달 전',this.oneMonthAgo)
+           filteredContents=filteredContents.filter((item)=>{
+             return new Date(item.registerDate) >= this.oneMonthAgo
+           })
+        }
+        else if(date.length==2){
+            filteredContents=filteredContents.filter((item)=>{
+                return new Date(item.registerDate) >= date[0] && new Date(item.registerDate) <= date[1]
+              })
+        }
+        return filteredContents
+    }
     render() {
         console.log('approval', this.state.approval)
         console.log('sale', this.state.sale)
@@ -168,7 +199,7 @@ export default class UserManager extends Component {
                         {/* 튜플영역을 map을 사용하여 하나씩 받아와 뿌려주도록 구성함 */}
                         <tbody>
                             {
-                                this.state.userContents.length > 0 && this.state.userContents.slice(this.state.offset, this.state.offset + this.itemCountPerPage).map((item, i) =>
+                                this.state.userContents.slice(this.state.offset, this.state.offset + this.itemCountPerPage).map((item, i) =>
                                     <UserManagerItems item={item} key={i}  listener={(item)=>this.setItemIndex(item)} />)
                             }
                         </tbody>
@@ -202,11 +233,11 @@ class UserManagerItems extends Component {
         const item = this.props.item;
         return (
             <tr onClick={this.onClickListener}>
-                <td>{item.id}</td>
+                <td>{item.companyName}</td>
                 <td>{item.companyNo}</td>
-                <td>{item.phone}</td>
+                <td>{item.companyTel}</td>
                 <td>{item.registerDate}</td>
-                <td>{item.validate}</td>
+                <td>{item.companyAddress}</td>
                 {/* 0:승인됨, 1:승인안됨 */}
                 {item.validate === 0
                     ? (<td>O</td>)

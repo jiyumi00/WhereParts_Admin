@@ -11,10 +11,8 @@ export default class Sale extends Component {
     constructor(props) {
         
         super(props);
-        var today=new Date();
-        this.oneWeekAgo= new Date(today.setDate(today.getDate()-7));
-        var today=new Date();
-        this.oneMonthAgo=new Date(today.setMonth(today.getMonth()-1));
+        this.oneWeekAgo= Constant.getOneWeekAgo();
+        this.oneMonthAgo=Constant.getOneMonthAgo();
 
         this.itemCountPerPage = 11; //한페이지당 보여질 리스트 갯수
         this.pageCountPerPage = 5;
@@ -26,7 +24,7 @@ export default class Sale extends Component {
             modalVisible: false, //상품 모달
 
             goodsContents: [],           //검색 결과 Contents
-            selectedItemIndex: null,
+            selectedgoodsID: null,
 
             //date: 0,  // 0: 설정x, 1:today, 2:week, 3:month
             //dateRange: [], //기간 범위
@@ -39,46 +37,45 @@ export default class Sale extends Component {
     componentDidMount() {
         this.callGetGoodsAPI().then((response) => {
             this.contents = response;
-            this.setState({ goodsContents: this.dataFiltering(0) });
+            this.setState({ goodsContents: response });
         });
 
     }
     //기간설정에 따른 데이터필터링
     dataFiltering(date){
-        
         let filteredContents=this.contents;
-      
-        if(date==1){
+        if(date===1){
             filteredContents=filteredContents.filter((item)=>{
-                return new Date(item.registerDate) == this.today
+                return new Date(item.registerDate) === this.today
             }) 
-            
         }
-        else if(date==2){
+        else if(date===2){
             console.log('일주일 전',this.oneWeekAgo)
             filteredContents=filteredContents.filter((item)=>{
                 return new Date(item.registerDate) >= this.oneWeekAgo
             }) 
             
         }
-        else if(date==3){
+        else if(date===3){
             console.log('한달 전',this.oneMonthAgo)
            filteredContents=filteredContents.filter((item)=>{
              return new Date(item.registerDate) >= this.oneMonthAgo
            })
         }
-        else if(date.length==2){
+        else if(date.length===2){
+            
             filteredContents=filteredContents.filter((item)=>{
+                console.log('dates',new Date(item.registerDate))
                 return new Date(item.registerDate) >= date[0] && new Date(item.registerDate) <= date[1]
               })
         }
         return filteredContents
     }
     //프로젝트 리스트에서 하나의 아이템을 선택하면 DetailPopup창을 띄우고 현재 선택된 아이템의 index 설정
-    setItemIndex = (index) => {
+    setItemIndex = (goodsID) => {
         this.setState({
             modalVisible: !this.state.modalVisible,
-            selectedItemIndex: index
+            selectedgoodsID: goodsID
         });
     }
 
@@ -93,7 +90,11 @@ export default class Sale extends Component {
     //기간설정리스너
     onDateListener = (date) => {
         console.log('date', date)
-        this.setState({goodsContents:this.dataFiltering(date),})
+        this.setState({goodsContents:[]},()=>{
+            this.setState({goodsContents:this.dataFiltering(date)})
+            console.log('goodsLength',this.state.goodsContents.length)
+        })
+       
     }
     onDateRangeListener = (dates) => {
         console.log('dateRange', dates)
@@ -109,6 +110,7 @@ export default class Sale extends Component {
 
 
     render() {
+       
         return (
             <Container>
                 <nav className="topmenubar">
@@ -116,7 +118,7 @@ export default class Sale extends Component {
 
                 </nav>
                 {
-                    this.state.modalVisible && <ModalGoodsDetail item={this.state.goodsContents[this.state.selectedItemIndex]} hideButtonClicked={this.setItemIndex} />
+                    this.state.modalVisible && <ModalGoodsDetail goodsID={this.state.selectedgoodsID} hideButtonClicked={()=>this.setState({ modalVisible: !this.state.modalVisible})} />
                 }
 
                     <Table hover style={{ marginBottom: 5}}>
@@ -133,13 +135,16 @@ export default class Sale extends Component {
                         <tbody>
                             {
                                 this.state.goodsContents.slice(this.state.offset, this.state.offset + this.itemCountPerPage).map((item, i) =>
-                                    <SaleItem item={item} key={i} index={i} listener={this.setItemIndex} />)
+                                    <SaleItem item={item} key={item.id} listener={(goodsID)=>this.setItemIndex(goodsID)} />)
                             }
                         </tbody>
                     </Table>
 
                     <footer className="w-100 p-2" style={{ textAlign: 'center' }}>
-                        <Pagenation2 itemCount={100} pageCountPerPage={this.pageCountPerPage} itemCountPerPage={this.itemCountPerPage} currentPage={this.state.currentPage} clickListener={this.setCurrentPage} />
+                        {this.state.goodsContents.length>0 &&
+                        (<Pagenation2 itemCount={this.state.goodsContents.length} pageCountPerPage={this.pageCountPerPage} itemCountPerPage={this.itemCountPerPage} currentPage={this.state.currentPage} clickListener={this.setCurrentPage} />
+                        )}
+                        
                     </footer>
 
             </Container>
@@ -156,13 +161,16 @@ class SaleItem extends Component {
         }
     }
     componentDidMount() {
+        console.log('itemID',this.props.item.id)
         this.callGetGoodsFirstImageAPI().then((response) => {
+            console.log('response',response)
             this.setState({ goodsFirstImageURI: URL.createObjectURL(response) })
         })
 
     }
+    
     onClickListener = () => {
-        this.props.listener(this.props.index);
+        this.props.listener(this.props.item.id);
     }
     async callGetGoodsFirstImageAPI() {
         let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsImage?id=" + this.props.item.id + "&position=1");
@@ -172,6 +180,7 @@ class SaleItem extends Component {
         }
     }
     render() {
+   
         const item = this.props.item;
         return (
             <tr onClick={this.onClickListener}>

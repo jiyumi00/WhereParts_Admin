@@ -13,15 +13,15 @@ class Pagenation2 extends Component {
         }
         console.log('pagenation props = ', this.props)
 
-    this.maxPage = Math.ceil(this.props.itemCount / this.props.itemCountPerPage);
+        this.maxPage = Math.ceil(this.props.itemCount / this.props.itemCountPerPage);
 
-    for (let i = 0; i <= this.maxPage; i++)
-        this.pages.push(i);
+        for (let i = 0; i <= this.maxPage; i++)
+            this.pages.push(i);
 
-    if (this.maxPage < this.props.pageCountPerPage)
-        this.setState({ endPage: this.maxPage });
+        if (this.maxPage < this.props.pageCountPerPage)
+            this.setState({ endPage: this.maxPage });
 
-    console.log('pages = ', this.pages);
+        console.log('pages = ', this.pages);
 
     }
 

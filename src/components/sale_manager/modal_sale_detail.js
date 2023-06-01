@@ -30,20 +30,20 @@ export default class ModalGoodsDetail extends Component {
     }
     
     async callGetGoodsDetailAPI() {
-        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsDetail?login_id=3&id=" + this.props.item.id);
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsDetail?login_id=3&id=" + this.props.goodsID);
         let response = await manager.start();
         if (response.ok)
             return response.json();
     }
     async callImageLengthAPI() {
-        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsImageLength?id=" +this.props.item.id)
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsImageLength?id=" +this.props.goodsID)
         let response = await manager.start();
         if (response.ok) {
             return response.json();
         }
     }
     async callGetImageAPI(position) {
-        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsImage?id=" + this.props.item.id + "&position=" + position);
+        let manager = new WebServiceManager(Constant.serviceURL + "/GetGoodsImage?id=" + this.props.goodsID + "&position=" + position);
         let response = await manager.start();
         if (response.ok) {
             return response.blob();
