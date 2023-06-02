@@ -18,6 +18,10 @@ thead {
     font-weight: bold;
 }
 
+th{
+    width: 12rem;
+}
+
 td{
     vertical-align:middle;
     text-align: center;
@@ -128,7 +132,7 @@ a.fc-col-header-cell-cushion {
 
 .datepicker-one {
     text-align: center;
-    min-width: 335px;
+    min-width: 310px;
     padding: 8px 20px;
     border-width: 1px;
     border-top-right-radius: 4px;
@@ -145,7 +149,6 @@ a.fc-col-header-cell-cushion {
     .fleft {
         width: 100%;
     }
-
     .fright {
         width: 100%;
         margin-top: 15px;
@@ -157,7 +160,10 @@ a.fc-col-header-cell-cushion {
 }
 
 @media screen and (max-width : 768px) {
+    th{
+        vertical-align: middle;
 
+    }
     .location {
         float: left;
     }

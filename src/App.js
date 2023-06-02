@@ -12,7 +12,7 @@ import MarketingPage from "./pages/marketing_page";
 
 function App() {
   return (
-   <BrowserRouter>
+   <BrowserRouter basename="/admin">
     <Routes>
       <Route path="/" element={<LoginPage/>} />
       <Route path="/DashBoard" element={<DashBoardPage/>}/>

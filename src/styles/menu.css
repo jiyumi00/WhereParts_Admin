@@ -61,7 +61,6 @@ a {
   .sidemenu {
     width: 25%;
     float: left;
-    font-size: 15px;
   }
 
   .main {
@@ -69,4 +68,9 @@ a {
     margin-top:115px;
   }
 
+}
+@media screen and (max-width : 768px) {
+  .sidemenu {
+    font-size: 12px;
+  }
 }

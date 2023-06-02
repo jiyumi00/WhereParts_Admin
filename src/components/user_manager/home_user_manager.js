@@ -18,35 +18,36 @@ import Pagenation2 from "../../util/pagenation2";
 export default class UserManager extends Component {
     constructor(props) {
         super(props);
-        
-      
-        this.approval=Constant.getApproval();
+
+
+        this.approval = Constant.getApproval();
+        this.sales = Constant.getSales();
 
         this.itemCountPerPage = 17; //한페이지당 보여질 리스트 갯수
         this.pageCountPerPage = 5;
 
         this.contents = []; //서버에서 가져온 원본 contents
 
-        
+
         this.state = {
             modalVisible: false, //상품 모달
-           
+
             userContents: [], //회원정보데이터
-            item:[],
+            item: [],
             selectedItemIndex: null,
 
             userRegisterModalVisible: false,
             approve: this.approval[0].value, //승인여부 드롭박스 All:전체 , 0:승인됨 , 1:승인안됨
-            sale: '', //판매건수 드롭박스 2:전체, max:높은순, min:낮은순
+            sale: this.sales[0].value, //판매건수 드롭박스 2:전체, max:높은순, min:낮은순
 
             date: 0,  // 0: 전체, 1:today, 2:month, 배열:기간
             dateRange: [], //기간 범위
-            searchText:'',
+            searchText: '',
 
             currentPage: 1,      // 현재 페이지 (setCurrentPage()에서 변경됨)
             offset: 0,            //현재페이지에서 시작할 item index
 
-            
+
         }
     }
 
@@ -72,7 +73,7 @@ export default class UserManager extends Component {
     setItemIndex = (item) => {
         this.setState({
             modalVisible: !this.state.modalVisible,
-            item:item
+            item: item
         });
     }
     //Pagenation에서 몇페이지의 내용을 볼지 선택 (페이지를 선택하면 현재의 페이지에따라 offset 변경)
@@ -81,62 +82,73 @@ export default class UserManager extends Component {
         this.setState({ currentPage: page, offset: lastOffset });
     };
 
-    //판매것수에 관한 드롭박스 아이템 선택시 value값을 받아오는 핸들러
-    //테이블 새로 불러올때 사용예정
-    //아이템이 새로 선택될때 이벤트가 발생하여 sale 값을 갱신해줌
-    salelHandleChange = (e) => {
-        console.log(e)
-        this.setState({ sale: e.target.value })
-    }
 
-     //기간설정리스너
+    //기간설정리스너
     onDateListener = (date) => {
         console.log('date', date)
-        this.setState({date:date})
-        this.setState({userContents:this.dataFiltering(date,this.state.searchText,this.state.approve)})
+        this.setState({ date: date })
+        this.setState({ userContents: this.dataFiltering(date, this.state.searchText, this.state.approve, this.state.sale) })
     }
     onDateRangeListener = (dates) => {
-        this.setState({date:dates})
-        this.setState({ userContents:this.dataFiltering(dates,this.state.searchText,this.state.approve) });
+        this.setState({ date: dates })
+        this.setState({ userContents: this.dataFiltering(dates, this.state.searchText, this.state.approve, this.state.sale) });
     }
-    searchTextListener =(text)=>{
+    //검색리스너
+    searchTextListener = (text) => {
+        this.setState({ searchText: text })
+        this.setState({ userContents: this.dataFiltering(this.state.date, text, this.state.approve, this.state.sale) })
+    }
+    //승인여부리스너
+    selectApproveListener = (value) => {
+        this.setState({ approve: value })
+        this.setState({ userContents: this.dataFiltering(this.state.date, this.state.searchText, value, this.state.sale) })
+    }
+    //판매건수 리스너
+    selectSaleListener = (value) => {
+        this.setState({ sale: value })
+        this.setState({ userContents: this.dataFiltering(this.state.date, this.state.searchText, this.state.approve, value) })
+    }
 
-        this.setState({searchText:text})
-        this.setState({userContents:this.dataFiltering(this.state.date,text,this.state.approve)})
-    }
-    selectApprove =(value)=>{
-        console.log('selected data: ', value);
-        this.setState({approve:value})
-        this.setState({userContents:this.dataFiltering(this.state.date, this.state.searchText,value)})
-    }
+    //기간설정에 따른 데이터필터링
+    dataFiltering(date, text, approve, sale) {
+        console.log('date: ', date)
+        console.log('text: ', text)
+        console.log('approve: ', approve)
+        console.log('sale: ', sale)
+        let filteredContents = this.contents;
 
-     //기간설정에 따른 데이터필터링
-    dataFiltering(date,text,value){
-        console.log('date: ',date)
-        console.log('text: ',text)
-        console.log('value: ',value)
-        let filteredContents=this.contents;
-        
-        
-        filteredContents=filteredContents.filter((item)=>{
-            if(date===1)
+        filteredContents = filteredContents.filter((item) => {
+            if (date === 1)
                 return Constant.isSameDate(new Date(item.registerDate))
-            else if(date===2)
+            else if (date === 2)
                 return Constant.isSameMonth(new Date(item.registerDate))
-            else if(date.length===2)    
+            else if (date.length === 2)
                 return new Date(item.registerDate) >= date[0] && new Date(item.registerDate) <= date[1]
-            else 
+            else
                 return true
-            
-        }) 
-            
-        filteredContents=filteredContents.filter((item) => {   
-            console.log('keyword: ',text);
-            console.log('item',item)
-            if(item.companyNo.includes(text))
+
+        })
+
+        filteredContents = filteredContents.filter((item) => {
+            console.log('keyword: ', text)
+            if (item.companyNo.includes(text))
                 return true
-            });
-        
+        });
+
+        filteredContents = filteredContents.filter((item) => {
+            if (approve === this.approval[0].value)
+                return true;
+            else
+                return item.validate === approve
+        })
+
+        filteredContents = filteredContents.filter((item) => {
+            if (sale === this.sales[0].value)
+                return true;
+            else
+                return item.sale === sale
+        })
+
         return filteredContents
 
     }
@@ -155,12 +167,9 @@ export default class UserManager extends Component {
                                     <Select
                                         value={this.state.approve}
                                         label="승인여부"
-                                        onChange={(e)=>this.selectApprove(e.target.value)}
+                                        onChange={(e) => this.selectApproveListener(e.target.value)}
                                     >
-                                        {this.approval.map((item,i)=><MenuItem value={item.value} key={i}>{item.title}</MenuItem>)}
-                                        {/* <MenuItem value={"All"}>전체</MenuItem>
-                                        <MenuItem value={0}>승인됨</MenuItem>
-                                        <MenuItem value={1}>승인안됨</MenuItem> */}
+                                        {this.approval.map((item, i) => <MenuItem value={item.value} key={i}>{item.title}</MenuItem>)}
                                     </Select>
                                 </FormControl>
                             </Box>
@@ -173,11 +182,9 @@ export default class UserManager extends Component {
                                         <Select
                                             value={this.state.sale}
                                             label="판매건수"
-                                            onChange={this.salelHandleChange}
+                                            onChange={(e) => this.selectSaleListener(e.target.value)}
                                         >
-                                            <MenuItem value={"All"}>전체</MenuItem>
-                                            <MenuItem value={"max"}>높은순</MenuItem>
-                                            <MenuItem value={"min"}>낮은순</MenuItem>
+                                            {this.sales.map((item, i) => <MenuItem value={item.value} key={i}>{item.title}</MenuItem>)}
                                         </Select>
                                     </FormControl>
                                 </Box>
@@ -186,7 +193,7 @@ export default class UserManager extends Component {
                         </div>
 
 
-                        <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} searchTextListener={(text)=>this.searchTextListener(text)}/>
+                        <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} searchTextListener={(text) => this.searchTextListener(text)} />
 
 
                     </nav>
@@ -213,13 +220,13 @@ export default class UserManager extends Component {
                         <tbody>
                             {
                                 this.state.userContents.slice(this.state.offset, this.state.offset + this.itemCountPerPage).map((item, i) =>
-                                    <UserManagerItems item={item} key={i}  listener={(item)=>this.setItemIndex(item)} />)
+                                    <UserManagerItems item={item} key={i} listener={(item) => this.setItemIndex(item)} />)
                             }
                         </tbody>
                     </Table>
                     <footer className="w-100 p-2" style={{ textAlign: 'center' }}>
-                        {this.state.userContents.length>0 && (
-                        <Pagenation2 itemCount={this.state.userContents.length} pageCountPerPage={this.pageCountPerPage} itemCountPerPage={this.itemCountPerPage} currentPage={this.state.currentPage} clickListener={this.setCurrentPage} />
+                        {this.state.userContents.length > 0 && (
+                            <Pagenation2 itemCount={this.state.userContents.length} pageCountPerPage={this.pageCountPerPage} itemCountPerPage={this.itemCountPerPage} currentPage={this.state.currentPage} clickListener={this.setCurrentPage} />
                         )}</footer>
 
                 </Container>

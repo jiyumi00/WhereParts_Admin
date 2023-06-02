@@ -10,7 +10,7 @@ export default class Constant{
         return  [
             { name: "대시보드", href: "/DashBoard", icon: <HomeIcon /> },
             { name: "회원관리", href: "/UserInfo", icon: <PersonIcon /> },
-            { name: "판매내역", href: "/Sale", icon: <MonetizationOnIcon /> },
+            { name: "등록된상품", href: "/Sale", icon: <MonetizationOnIcon /> },
             { name: "거래내역", href: "/Transaction", icon: <ReceiptIcon /> }
         ];
     }
@@ -38,6 +38,14 @@ export default class Constant{
             {value:"All", title:"전체"},
             {value:0, title:"승인됨"},
             {value:1, title:"승인안됨"}
+        ];
+    }
+    //user_mannager sale dropdownbox
+    static getSales(){
+        return [
+            {value:"All", title:"전체"},
+            {value:"Max", title:"높은순"},
+            {value:"Min", title:"낮은순"}
         ];
     }
 }
