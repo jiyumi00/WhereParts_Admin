@@ -3,17 +3,13 @@ import { Container, Table } from "react-bootstrap";
 import PageHeader from "../../util/page_header";
 
 import SalesDetailModal from "./modal_trans_detail";
-
+import Constant from "../../util/constant_variables";
 import Pagenation2 from "../../util/pagenation2";
 
 export default class Transaction extends Component {
     constructor(props) {
         super(props);
-        const today = new Date();
-
-        this.oneWeekAgo = new Date(today.setDate(today.getDate() - 7));
-        this.oneMonthAgo = new Date(today.setMonth(today.getMonth() - 1));
-
+     
         this.itemCountPerPage = 17; //한페이지당 보여질 리스트 갯수
         this.pageCountPerPage = 5;
 
@@ -25,13 +21,12 @@ export default class Transaction extends Component {
             selectList: ["배송전", "배송중", "배송완료", "거래완료"],
             selectValue: "배송전",
             transactionColmname: ["판매자", "품명", "구매자", "결제수단", "결제날짜", "주문번호"],
-            filteredContents: [],
+            salesContents: [],
 
             selectedItemIndex: null,
 
-            date: 0,  // 0: 설정x, 1:today, 2:week, 3:month
-            dateRange: [], //기간 범위
-
+            date: 0,  // 0: 전체, 1:today, 2:month, 배열:기간
+            searchText: '',
             currentPage: 1,      // 현재 페이지 (setCurrentPage()에서 변경됨)
             offset: 0            //현재페이지에서 시작할 item index
         }
@@ -45,10 +40,53 @@ export default class Transaction extends Component {
             quantity: 1
         }];
 
-        this.setState({ filteredContents: this.dataFiltering(0) });
+        this.setState({ salesContents: this.dataFiltering(0) });
+
+    }
+    //기간설정리스너
+    onDateListener = (date) => {
+        console.log('date', date)
+        this.setState({ date: date })
+        this.setState({ salesContents: this.dataFiltering(date, this.state.searchText) })
+    }
+    onDateRangeListener = (dates) => {
+        this.setState({ date: dates })
+        this.setState({ salesContents: this.dataFiltering(dates, this.state.searchText) });
+    }
+    searchTextListener = (text) => {
+
+        this.setState({ searchText: text })
+        this.setState({ salesContents: this.dataFiltering(this.state.date, text) })
 
     }
 
+    //기간설정에 따른 데이터필터링
+    dataFiltering(date,text){
+        console.log('date',date)
+        console.log('text',text)
+        let filteredContents=this.contents;
+        
+        filteredContents=filteredContents.filter((item)=>{
+            if(date===1)
+                return Constant.isSameDate(new Date(item.registerDate))
+            else if(date===2)
+                return Constant.isSameMonth(new Date(item.registerDate))
+            else if(date.length===2)    
+                return new Date(item.registerDate) >= date[0] && new Date(item.registerDate) <= date[1]
+            else 
+                return true
+            
+        }) 
+       /*      
+        filteredContents=filteredContents.filter((item) => {   
+            console.log('keyword: ',text);
+            console.log('item',item)
+            if(item.companyNo.includes(text))
+                return true
+            }); */
+        
+        return filteredContents
+    }
     //프로젝트 리스트에서 하나의 아이템을 선택하면 DetailPopup창을 띄우고 현재 선택된 아이템의 index 설정
     setItemIndex = (index) => {
         this.setState({
@@ -57,47 +95,14 @@ export default class Transaction extends Component {
         });
     }
 
-    //기간설정에 따른 데이터필터링
-    dataFiltering(date) {
 
-        let filteredContents = this.contents;
-
-        if (date === 1) {
-            filteredContents = filteredContents.filter((item) => {
-                return new Date(item.registerDate) === this.today
-            })
-
-        }
-        else if (date === 2) {
-            console.log('일주일 전', this.oneWeekAgo)
-            filteredContents = filteredContents.filter((item) => {
-                return new Date(item.registerDate) >= this.oneWeekAgo
-            })
-
-        }
-        else if (date === 3) {
-            console.log('한달 전', this.oneMonthAgo)
-            filteredContents = filteredContents.filter((item) => {
-                return new Date(item.registerDate) >= this.oneMonthAgo
-            })
-        }
-        return filteredContents
-    }
 
     //Pagenation에서 몇페이지의 내용을 볼지 선택 (페이지를 선택하면 현재의 페이지에따라 offset 변경)
     setCurrentPage = (page) => {
         let lastOffset = (page - 1) * this.itemCountPerPage;
         this.setState({ currentPage: page, offset: lastOffset });
     };
-    //기간설정리스너
-    onDateListener = (date) => {
-        console.log('date', date)
-        this.setState({ filteredContentss: this.dataFiltering(date), })
-    }
-    onDateRangeListener = (dates) => {
-        console.log('dateRange', dates)
-        this.setState({ dateRange: dates, date: 0 });
-    }
+
 
     //라디오버튼리스너
     handleChange = (e) => {
@@ -126,10 +131,10 @@ export default class Transaction extends Component {
                         ))}
 
                     </div>
-                    <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
+                    <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} searchTextListener={(text)=>this.searchTextListener(text)}/>
                 </nav>
                 {
-                    this.state.modalVisible && <SalesDetailModal item={this.state.filteredContents[this.state.selectedItemIndex]} hideButtonClicked={this.setItemIndex} />
+                    this.state.modalVisible && <SalesDetailModal item={this.state.salesContents[this.state.selectedItemIndex]} hideButtonClicked={this.setItemIndex} />
                 }
 
                 <Table hover style={{ marginBottom: 5 }} >
@@ -144,7 +149,7 @@ export default class Transaction extends Component {
                     </thead>
                     <tbody>
                         {
-                            this.state.filteredContents.length > 0 && this.state.filteredContents.slice(this.state.offset, this.state.offset + this.itemCountPerPage).map((item, i) =>
+                            this.state.salesContents.length > 0 && this.state.salesContents.slice(this.state.offset, this.state.offset + this.itemCountPerPage).map((item, i) =>
                                 <TransactionItem item={item} key={i} index={i} listener={this.setItemIndex} />)
                         }
                     </tbody>

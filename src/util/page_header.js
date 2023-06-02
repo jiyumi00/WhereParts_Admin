@@ -38,7 +38,7 @@ export default class PageHeader extends Component {
                                 {/* <DateSelect onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} /> */}
                                 <div className="btn-group" role="group" aria-label="Basic example">
                                     <button type="button" className={this.state.date==1?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(1)}}>일</button>
-                                    <button type="button" className={this.state.date==3?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(3)}}>월</button>
+                                    <button type="button" className={this.state.date==2?"btn btn-outline-dark active":"btn btn-outline-dark"} onClick={()=>{this.dateButtonClicked(2)}}>월</button>
                                     <DatePicker 
                                         selectsRange={true}
                                         className="datepicker-one"

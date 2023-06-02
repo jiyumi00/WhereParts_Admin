@@ -11,23 +11,20 @@ export default class Sale extends Component {
     constructor(props) {
         
         super(props);
-        this.oneWeekAgo= Constant.getOneWeekAgo();
-        this.oneMonthAgo=Constant.getOneMonthAgo();
-
+      
         this.itemCountPerPage = 11; //한페이지당 보여질 리스트 갯수
         this.pageCountPerPage = 5;
 
         this.contents = []; //서버에서 가져온 원본 contents
 
         this.state = {
-
             modalVisible: false, //상품 모달
 
             goodsContents: [],           //검색 결과 Contents
             selectedgoodsID: null,
 
-            //date: 0,  // 0: 설정x, 1:today, 2:week, 3:month
-            //dateRange: [], //기간 범위
+            date: 0,  // 0: 전체, 1:today, 2:month, 배열:기간
+            searchText:'',
 
             currentPage: 1,      // 현재 페이지 (setCurrentPage()에서 변경됨)
             offset: 0            //현재페이지에서 시작할 item index
@@ -41,34 +38,49 @@ export default class Sale extends Component {
         });
 
     }
-    //기간설정에 따른 데이터필터링
-    dataFiltering(date){
+   
+    //기간설정리스너
+    onDateListener = (date) => {
+        console.log('date', date)
+        this.setState({date:date})
+        this.setState({goodsContents:this.dataFiltering(date,this.state.searchText)})
+    }
+    onDateRangeListener = (dates) => {
+        this.setState({date:dates})
+        this.setState({ goodsContents:this.dataFiltering(dates,this.state.searchText) });
+    }
+    searchTextListener =(text)=>{
+
+        this.setState({searchText:text})
+        this.setState({goodsContents:this.dataFiltering(this.state.date,text)})
+     
+    }
+
+     //기간설정에 따른 데이터필터링
+    dataFiltering(date,text){
+        console.log('date',date)
+        console.log('text',text)
         let filteredContents=this.contents;
-        if(date===1){
-            filteredContents=filteredContents.filter((item)=>{
-                return new Date(item.registerDate) === this.today
-            }) 
-        }
-        else if(date===2){
-            console.log('일주일 전',this.oneWeekAgo)
-            filteredContents=filteredContents.filter((item)=>{
-                return new Date(item.registerDate) >= this.oneWeekAgo
-            }) 
-            
-        }
-        else if(date===3){
-            console.log('한달 전',this.oneMonthAgo)
-           filteredContents=filteredContents.filter((item)=>{
-             return new Date(item.registerDate) >= this.oneMonthAgo
-           })
-        }
-        else if(date.length===2){
-            
-            filteredContents=filteredContents.filter((item)=>{
-                console.log('dates',new Date(item.registerDate))
+        
+        filteredContents=filteredContents.filter((item)=>{
+            if(date===1)
+                return Constant.isSameDate(new Date(item.registerDate))
+            else if(date===2)
+                return Constant.isSameMonth(new Date(item.registerDate))
+            else if(date.length===2)    
                 return new Date(item.registerDate) >= date[0] && new Date(item.registerDate) <= date[1]
-              })
-        }
+            else 
+                return true
+            
+        }) 
+            
+        filteredContents=filteredContents.filter((item) => {   
+            console.log('keyword: ',text);
+            console.log('item',item)
+            if(item.name.includes(text))
+                return true
+            });
+        
         return filteredContents
     }
     //프로젝트 리스트에서 하나의 아이템을 선택하면 DetailPopup창을 띄우고 현재 선택된 아이템의 index 설정
@@ -87,19 +99,7 @@ export default class Sale extends Component {
     };
 
 
-    //기간설정리스너
-    onDateListener = (date) => {
-        console.log('date', date)
-        this.setState({goodsContents:[]},()=>{
-            this.setState({goodsContents:this.dataFiltering(date)})
-            console.log('goodsLength',this.state.goodsContents.length)
-        })
-       
-    }
-    onDateRangeListener = (dates) => {
-        console.log('dateRange', dates)
-        this.setState({ goodsContents:this.dataFiltering(dates) });
-    }
+   
 
     async callGetGoodsAPI() {
         let manager = new WebServiceManager(Constant.serviceURL + "/GetGoods?login_id=1");
@@ -108,13 +108,11 @@ export default class Sale extends Component {
             return response.json();
     }
 
-
     render() {
-       
         return (
             <Container>
                 <nav className="topmenubar">
-                    <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} />
+                    <PageHeader onDateRangeListener={this.onDateRangeListener} onDateListener={this.onDateListener} searchTextListener={(text)=>this.searchTextListener(text)}/>
 
                 </nav>
                 {

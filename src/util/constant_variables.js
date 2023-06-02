@@ -21,13 +21,24 @@ export default class Constant{
         let day=date.getDate();
         return `${year}-${month >= 10 ? month : '0' + month}-${day >= 10 ? day : '0' + day}`
     }
-    static getOneWeekAgo(){
+    
+    static isSameDate=(date)=>{
         let today=new Date()
-        return new Date(today.setDate(today.getDate()-7))
+        return date.getFullYear()===today.getFullYear()
+        && date.getMonth()===today.getMonth()
+        &&date.getDate()===today.getDate();
     }
-    static getOneMonthAgo(){
+    static isSameMonth=(date)=>{
         let today=new Date()
-        return new Date(today.setMonth(today.getMonth()-1))
+        return date.getMonth()===today.getMonth()
+    }
+    //user_manager approval dropdownbox
+    static getApproval(){
+        return [
+            {value:"All", title:"전체"},
+            {value:0, title:"승인됨"},
+            {value:1, title:"승인안됨"}
+        ];
     }
 }
 

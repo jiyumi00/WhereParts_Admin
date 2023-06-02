@@ -19,13 +19,15 @@ export default class UserManager extends Component {
     constructor(props) {
         super(props);
         
-        this.oneWeekAgo= Constant.getOneWeekAgo();
-        this.oneMonthAgo=Constant.getOneMonthAgo();
+      
+        this.approval=Constant.getApproval();
 
         this.itemCountPerPage = 17; //한페이지당 보여질 리스트 갯수
         this.pageCountPerPage = 5;
 
         this.contents = []; //서버에서 가져온 원본 contents
+
+        
         this.state = {
             modalVisible: false, //상품 모달
            
@@ -34,12 +36,13 @@ export default class UserManager extends Component {
             selectedItemIndex: null,
 
             userRegisterModalVisible: false,
-            approval: '', //승인여부 드롭박스 2:전체 , 0:승인됨 , 1:승인안됨
+            approve: this.approval[0].value, //승인여부 드롭박스 All:전체 , 0:승인됨 , 1:승인안됨
             sale: '', //판매건수 드롭박스 2:전체, max:높은순, min:낮은순
 
-            date: 0,  // 0: 설정x, 1:today, 2:week, 3:month
+            date: 0,  // 0: 전체, 1:today, 2:month, 배열:기간
             dateRange: [], //기간 범위
-            
+            searchText:'',
+
             currentPage: 1,      // 현재 페이지 (setCurrentPage()에서 변경됨)
             offset: 0,            //현재페이지에서 시작할 item index
 
@@ -77,13 +80,6 @@ export default class UserManager extends Component {
         let lastOffset = (page - 1) * this.itemCountPerPage;
         this.setState({ currentPage: page, offset: lastOffset });
     };
-    //승인여부에 관한 드롭박스 아이템 선택시 value값을 받아오는 핸들러
-    //테이블 새로 불러올때 사용예정
-    //아이템이 새로 선택될때 이벤트가 발생하여 approval 값을 갱신해줌
-    approvalHandleChange = (e) => {
-        console.log(e)
-        this.setState({ approval: e.target.value })
-    }
 
     //판매것수에 관한 드롭박스 아이템 선택시 value값을 받아오는 핸들러
     //테이블 새로 불러올때 사용예정
@@ -92,61 +88,57 @@ export default class UserManager extends Component {
         console.log(e)
         this.setState({ sale: e.target.value })
     }
+
      //기간설정리스너
-     onDateListener = (date) => {
+    onDateListener = (date) => {
         console.log('date', date)
-        this.setState({userContents:this.dataFiltering(date,'')})
+        this.setState({date:date})
+        this.setState({userContents:this.dataFiltering(date,this.state.searchText,this.state.approve)})
     }
     onDateRangeListener = (dates) => {
-        console.log('dateRange', dates)
-        this.setState({ userContents:this.dataFiltering(dates,'') });
+        this.setState({date:dates})
+        this.setState({ userContents:this.dataFiltering(dates,this.state.searchText,this.state.approve) });
     }
     searchTextListener =(text)=>{
-        console.log('searchtext',text)
-        this.setState({userContents:this.dataFiltering('',text)})
-     
+
+        this.setState({searchText:text})
+        this.setState({userContents:this.dataFiltering(this.state.date,text,this.state.approve)})
+    }
+    selectApprove =(value)=>{
+        console.log('selected data: ', value);
+        this.setState({approve:value})
+        this.setState({userContents:this.dataFiltering(this.state.date, this.state.searchText,value)})
     }
 
      //기간설정에 따른 데이터필터링
-    dataFiltering(date,text){
-        console.log('date',date)
+    dataFiltering(date,text,value){
+        console.log('date: ',date)
+        console.log('text: ',text)
+        console.log('value: ',value)
         let filteredContents=this.contents;
         
-        if(date===1){
-            filteredContents=filteredContents.filter((item)=>{
-                return new Date(item.registerDate) == this.today
-            }) 
-            
-        }
-        else if(date===2){
-            console.log('일주일 전',this.oneWeekAgo)
-            filteredContents=filteredContents.filter((item)=>{
-                return new Date(item.registerDate) >= this.oneWeekAgo
-            }) 
-            
-        }
-        else if(date===3){
-            console.log('한달 전',this.oneMonthAgo)
-           filteredContents=filteredContents.filter((item)=>{
-             return new Date(item.registerDate) >= this.oneMonthAgo
-           })
-        }
-        else if(date.length===2){
-            filteredContents=filteredContents.filter((item)=>{
+        
+        filteredContents=filteredContents.filter((item)=>{
+            if(date===1)
+                return Constant.isSameDate(new Date(item.registerDate))
+            else if(date===2)
+                return Constant.isSameMonth(new Date(item.registerDate))
+            else if(date.length===2)    
                 return new Date(item.registerDate) >= date[0] && new Date(item.registerDate) <= date[1]
-              })
-        }
-        if (text!="")
-        {
-            filteredContents=filteredContents.filter((item) => {   
-                console.log('keyword: ',text);
-                console.log('item',item)
-                if(item.companyNo.includes(text))
-                    return true
-              });
-        }
+            else 
+                return true
+            
+        }) 
+            
+        filteredContents=filteredContents.filter((item) => {   
+            console.log('keyword: ',text);
+            console.log('item',item)
+            if(item.companyNo.includes(text))
+                return true
+            });
         
         return filteredContents
+
     }
     render() {
         console.log('approval', this.state.approval)
@@ -161,19 +153,20 @@ export default class UserManager extends Component {
                                 <FormControl fullWidth>
                                     <InputLabel>승인여부</InputLabel>
                                     <Select
-                                        value={this.state.approval}
+                                        value={this.state.approve}
                                         label="승인여부"
-                                        onChange={this.approvalHandleChange}
+                                        onChange={(e)=>this.selectApprove(e.target.value)}
                                     >
-                                        <MenuItem value={2}>전체</MenuItem>
+                                        {this.approval.map((item,i)=><MenuItem value={item.value} key={i}>{item.title}</MenuItem>)}
+                                        {/* <MenuItem value={"All"}>전체</MenuItem>
                                         <MenuItem value={0}>승인됨</MenuItem>
-                                        <MenuItem value={1}>승인안됨</MenuItem>
+                                        <MenuItem value={1}>승인안됨</MenuItem> */}
                                     </Select>
                                 </FormControl>
                             </Box>
 
                             {/* 승인됨을 클릭한 경우만 판매건수 콤보박스 활성화 */}
-                            {this.state.approval === 0 &&
+                            {this.state.approve === 0 &&
                                 <Box style={{ marginRight: '15px' }} sx={{ minWidth: 190 }}>
                                     <FormControl fullWidth>
                                         <InputLabel>판매건수</InputLabel>
@@ -182,9 +175,9 @@ export default class UserManager extends Component {
                                             label="판매건수"
                                             onChange={this.salelHandleChange}
                                         >
-                                            <MenuItem value={2}>전체</MenuItem>
-                                            <MenuItem value={'max'}>높은순</MenuItem>
-                                            <MenuItem value={'min'}>낮은순</MenuItem>
+                                            <MenuItem value={"All"}>전체</MenuItem>
+                                            <MenuItem value={"max"}>높은순</MenuItem>
+                                            <MenuItem value={"min"}>낮은순</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Box>
